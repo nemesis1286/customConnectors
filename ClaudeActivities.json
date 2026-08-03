@@ -1,0 +1,657 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Not used, but needed to pass arm-ttk test `Location-Should-Not-Be-Hardcoded`.  We instead use the `workspace-location` which is derived from the LA workspace"
+      }
+    },
+    "workspace-location": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "[concat('Region to deploy solution resources -- separate from location selection',parameters('location'))]"
+      }
+    },
+    "subscription": {
+      "defaultValue": "[last(split(subscription().id, '/'))]",
+      "type": "string",
+      "metadata": {
+        "description": "subscription id where Microsoft Sentinel is setup"
+      }
+    },
+    "resourceGroupName": {
+      "defaultValue": "[resourceGroup().name]",
+      "type": "string",
+      "metadata": {
+        "description": "resource group name where Microsoft Sentinel is setup"
+      }
+    },
+    "workspace": {
+      "defaultValue": "",
+      "type": "string",
+      "metadata": {
+        "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
+      }
+    },
+    "apiKey": {
+      "type": "securestring",
+      "defaultValue": "-NA-"
+    }
+  },
+  "variables": {
+    "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
+    "_solutionName": "Anthropic Claude Activities",
+    "_solutionVersion": "1.0.20260729192615",
+    "_solutionAuthor": "Lamar Arnau",
+    "_packageIcon": "icon",
+    "_solutionId": "azuresentinel.azure-sentinel-solution-azuresentinel.azure-sentinel-Anthropic-Claude-Activities-dev-preview",
+    "dataConnectorVersionConnectorDefinition": "1.0.20260729192615",
+    "dataConnectorVersionConnections": "1.0.20260729192615",
+    "_solutionTier": "Community",
+    "_dataConnectorContentIdConnections": "Anthropic-Claude-ActivitiesConnections",
+    "dataConnectorTemplateNameConnections": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections')))]",
+    "_dataConnectorContentIdConnectorDefinition": "Anthropic-Claude-Activities-wizard-made-CCF",
+    "dataConnectorTemplateNameConnectorDefinition": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnectorDefinition')))]",
+    "_logAnalyticsTableId1": "ClaudeActivity_CL"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnectorDefinition'), variables('dataConnectorVersionConnectorDefinition'))]",
+      "location": "[parameters('workspace-location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+        "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnectorDefinition'))]",
+        "contentKind": "DataConnector",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('dataConnectorVersionConnectorDefinition')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+              "apiVersion": "2022-01-01-preview",
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "properties": {
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                "kind": "DataConnector",
+                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "dependencies": {
+                  "criteria": [
+                    {
+                      "version": "[variables('dataConnectorVersionConnections')]",
+                      "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                      "kind": "ResourcesDataConnector"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
+              "apiVersion": "2022-09-01-preview",
+              "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+              "location": "[parameters('workspace-location')]",
+              "kind": "Customizable",
+              "properties": {
+                "connectorUiConfig": {
+                  "id": "Anthropic-Claude-Activities-wizard-made-CCF",
+                  "title": "Anthropic Claude Activities (made with connector-wizard)",
+                  "publisher": "Lamar Arnau",
+                  "descriptionMarkdown": "The Activity Feed records authentication, chat, file, project, administrative, and platform action that occurs in your organization.",
+                  "graphQueriesTableName": "Custom-ClaudeActivity_CL",
+                  "dataTypes": [
+                    {
+                      "name": "ClaudeActivity_CL",
+                      "lastDataReceivedQuery": "ClaudeActivity_CL\n| where TimeGenerated > ago(12h)\n| summarize Time = max(TimeGenerated)\n| where isnotempty(Time)"
+                    }
+                  ],
+                  "availability": {
+                    "isPreview": true,
+                    "status": 1
+                  },
+                  "graphQueries": [
+                    {
+                      "metricName": "Total data received",
+                      "legend": "Anthropic Claude Activities Data",
+                      "baseQuery": "{{graphQueriesTableName}}"
+                    }
+                  ],
+                  "sampleQueries": [],
+                  "permissions": {
+                    "resourceProvider": [
+                      {
+                        "provider": "Microsoft.OperationalInsights/workspaces",
+                        "permissionsDisplayText": "Read and Write permissions are required.",
+                        "providerDisplayName": "Workspace",
+                        "scope": "Workspace",
+                        "requiredPermissions": {
+                          "write": true,
+                          "read": true,
+                          "delete": true,
+                          "action": false
+                        }
+                      }
+                    ]
+                  },
+                  "instructionSteps": [
+                    {
+                      "title": "Obtain Claude Compliance API Key",
+                      "description": "Claude Enterprise is required to enable the Compliance API and obtain the Compliance API key.\n\nFor detailed steps on how to enable the Compliance API, generate the key, and permissions required, please see the Claude documentation here: https://platform.claude.com/docs/en/manage-claude/compliance-api-access\n",
+                      "instructions": [
+                        {
+                          "type": "Textbox",
+                          "parameters": {
+                            "label": "apiKey",
+                            "placeholder": "",
+                            "type": "password",
+                            "name": "apiKey",
+                            "validations": {
+                              "required": true
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Connect",
+                      "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
+                      "instructions": []
+                    },
+                    {
+                      "title": "Connect",
+                      "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
+                      "instructions": []
+                    },
+                    {
+                      "title": "Connect",
+                      "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
+                      "instructions": [
+                        {
+                          "type": "ConnectionToggleButton",
+                          "parameters": {
+                            "connectLabel": "Connect",
+                            "disconnectLabel": "Disconnect",
+                            "name": "toggle"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "connectivityCriteria": [
+                    {
+                      "type": "HasDataConnectors",
+                      "value": []
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "DCR-AnthropicClaudeActivities",
+              "apiVersion": "2021-09-01-preview",
+              "type": "Microsoft.Insights/dataCollectionRules",
+              "location": "[parameters('workspace-location')]",
+              "kind": null,
+              "properties": {
+                "dataCollectionEndpointId": "{{DataCollectionEndpointId}}",
+                "streamDeclarations": {
+                  "Custom-ClaudeActivity_CL": {
+                    "columns": [
+                      {
+                        "name": "actor",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "claude_chat_id",
+                        "type": "string"
+                      },
+                      {
+                        "name": "claude_project_id",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "created_at",
+                        "type": "string"
+                      },
+                      {
+                        "name": "id",
+                        "type": "string"
+                      },
+                      {
+                        "name": "organization_id",
+                        "type": "string"
+                      },
+                      {
+                        "name": "type",
+                        "type": "string"
+                      },
+                      {
+                        "name": "organization_uuid",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                },
+                "destinations": {
+                  "logAnalytics": [
+                    {
+                      "workspaceResourceId": "[variables('workspaceResourceId')]",
+                      "name": "clv2ws1"
+                    }
+                  ]
+                },
+                "dataFlows": [
+                  {
+                    "streams": [
+                      "Custom-ClaudeActivity_CL"
+                    ],
+                    "destinations": [
+                      "clv2ws1"
+                    ],
+                    "outputStream": "Custom-ClaudeActivity_CL",
+                    "transformKql": "source | project TimeGenerated = now(), ActorEmailAddress = tostring(actor.email_address), ActorIpAddress = tostring(actor.ip_address), ActorType = tostring(actor.type), ActorUserAgent = tostring(actor.user_agent), ActorUserId = tostring(actor.user_id), ClaudeChatId = ['claude_chat_id'], ClaudeProjectId = ['claude_project_id'], CreatedAt = ['created_at'], Id = ['id'], OrganizationId = ['organization_id'], ActivityType = ['type'], OrganizationUuid = ['organization_uuid']"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "[variables('_logAnalyticsTableId1')]",
+              "tags": {
+                "StreamName": "Custom-ClaudeActivity_CL",
+                "DataSource": "(wizard-made) Anthropic Claude Activities Connector",
+                "Category": "Security"
+              },
+              "apiVersion": "2021-03-01-privatepreview",
+              "type": "Microsoft.OperationalInsights/workspaces/tables",
+              "location": "[parameters('workspace-location')]",
+              "kind": null,
+              "properties": {
+                "retentionInDays": 90,
+                "schema": {
+                  "name": "[variables('_logAnalyticsTableId1')]",
+                  "description": "Anthropic Claude Activities data (prototype schema)",
+                  "columns": [
+                    {
+                      "name": "TimeGenerated",
+                      "type": "datetime",
+                      "description": "Time of log ingestion"
+                    },
+                    {
+                      "name": "ActorEmailAddress",
+                      "type": "string"
+                    },
+                    {
+                      "name": "ActorIpAddress",
+                      "type": "string"
+                    },
+                    {
+                      "name": "ActorType",
+                      "type": "string"
+                    },
+                    {
+                      "name": "ActorUserAgent",
+                      "type": "string"
+                    },
+                    {
+                      "name": "ActorUserId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "ClaudeChatId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "ClaudeProjectId",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "CreatedAt",
+                      "type": "string"
+                    },
+                    {
+                      "name": "Id",
+                      "type": "string"
+                    },
+                    {
+                      "name": "OrganizationId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "ActivityType",
+                      "type": "string"
+                    },
+                    {
+                      "name": "OrganizationUuid",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition'),'-', variables('dataConnectorVersionConnectorDefinition'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('_solutionVersion')]"
+      }
+    },
+    {
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
+      "apiVersion": "2022-09-01-preview",
+      "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+      "location": "[parameters('workspace-location')]",
+      "kind": "Customizable",
+      "properties": {
+        "connectorUiConfig": {
+          "id": "Anthropic-Claude-Activities-wizard-made-CCF",
+          "title": "Anthropic Claude Activities (made with connector-wizard)",
+          "publisher": "Lamar Arnau",
+          "descriptionMarkdown": "The Activity Feed records authentication, chat, file, project, administrative, and platform action that occurs in your organization.",
+          "graphQueriesTableName": "Custom-ClaudeActivity_CL",
+          "dataTypes": [
+            {
+              "name": "ClaudeActivity_CL",
+              "lastDataReceivedQuery": "ClaudeActivity_CL\n| where TimeGenerated > ago(12h)\n| summarize Time = max(TimeGenerated)\n| where isnotempty(Time)"
+            }
+          ],
+          "availability": {
+            "isPreview": true,
+            "status": 1
+          },
+          "graphQueries": [
+            {
+              "metricName": "Total data received",
+              "legend": "Anthropic Claude Activities Data",
+              "baseQuery": "{{graphQueriesTableName}}"
+            }
+          ],
+          "sampleQueries": [],
+          "permissions": {
+            "resourceProvider": [
+              {
+                "provider": "Microsoft.OperationalInsights/workspaces",
+                "permissionsDisplayText": "Read and Write permissions are required.",
+                "providerDisplayName": "Workspace",
+                "scope": "Workspace",
+                "requiredPermissions": {
+                  "write": true,
+                  "read": true,
+                  "delete": true,
+                  "action": false
+                }
+              }
+            ]
+          },
+          "instructionSteps": [
+            {
+              "title": "Obtain Claude Compliance API Key",
+              "description": "Claude Enterprise is required to enable the Compliance API and obtain the Compliance API key.\n\nFor detailed steps on how to enable the Compliance API, generate the key, and permissions required, please see the Claude documentation here: https://platform.claude.com/docs/en/manage-claude/compliance-api-access\n",
+              "instructions": [
+                {
+                  "type": "Textbox",
+                  "parameters": {
+                    "label": "apiKey",
+                    "placeholder": "",
+                    "type": "password",
+                    "name": "apiKey",
+                    "validations": {
+                      "required": true
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "title": "Connect",
+              "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
+              "instructions": []
+            },
+            {
+              "title": "Connect",
+              "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
+              "instructions": []
+            },
+            {
+              "title": "Connect",
+              "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
+              "instructions": [
+                {
+                  "type": "ConnectionToggleButton",
+                  "parameters": {
+                    "connectLabel": "Connect",
+                    "disconnectLabel": "Disconnect",
+                    "name": "toggle"
+                  }
+                }
+              ]
+            }
+          ],
+          "connectivityCriteria": [
+            {
+              "type": "HasDataConnectors",
+              "value": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+      "apiVersion": "2022-01-01-preview",
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "properties": {
+        "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+        "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+        "kind": "DataConnector",
+        "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+        "source": {
+          "sourceId": "[variables('_solutionId')]",
+          "name": "[variables('_solutionName')]",
+          "kind": "Solution"
+        },
+        "author": {
+          "name": "[variables('_solutionAuthor')]"
+        },
+        "support": {
+          "name": "[variables('_solutionAuthor')]",
+          "tier": "[variables('_solutionTier')]"
+        },
+        "dependencies": {
+          "criteria": [
+            {
+              "version": "[variables('dataConnectorVersionConnections')]",
+              "contentId": "[variables('_dataConnectorContentIdConnections')]",
+              "kind": "ResourcesDataConnector"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections'), variables('dataConnectorVersionConnections'))]",
+      "location": "[parameters('workspace-location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_dataConnectorContentIdConnections')]",
+        "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnections'))]",
+        "contentKind": "ResourcesDataConnector",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('dataConnectorVersionConnections')]",
+          "parameters": {
+            "connectorDefinitionName": {
+              "defaultValue": "connectorDefinitionName",
+              "type": "string",
+              "minLength": 1
+            },
+            "workspace": {
+              "defaultValue": "[parameters('workspace')]",
+              "type": "string"
+            },
+            "dcrConfig": {
+              "defaultValue": {
+                "dataCollectionEndpoint": "data collection Endpoint",
+                "dataCollectionRuleImmutableId": "data collection rule immutableId"
+              },
+              "type": "object"
+            },
+            "apiKey": {
+              "defaultValue": "apiKey",
+              "type": "securestring"
+            }
+          },
+          "variables": {
+            "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]"
+          },
+          "resources": [
+            {
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnections')))]",
+              "apiVersion": "2022-01-01-preview",
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "properties": {
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentIdConnections'))]",
+                "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                "kind": "ResourcesDataConnector",
+                "version": "[variables('dataConnectorVersionConnections')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                }
+              }
+            },
+            {
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'AnthropicClaudeActivities-ClaudeActivity-Poller')]",
+              "apiVersion": "2022-12-01-preview",
+              "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+              "location": "[parameters('workspace-location')]",
+              "kind": "RestApiPoller",
+              "properties": {
+                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                "dataType": "ClaudeActivity",
+                "auth": {
+                  "type": "APIKey",
+                  "apiKey": "[[parameters('apiKey')]",
+                  "apiKeyName": "x-api-key"
+                },
+                "request": {
+                  "apiEndpoint": "https://api.anthropic.com/v1/compliance/activities",
+                  "httpMethod": "GET",
+                  "queryWindowInMin": 30
+                },
+                "response": {
+                  "eventsJsonPaths": [
+                    "$.data[*]"
+                  ],
+                  "format": "json"
+                },
+                "dcrConfig": {
+                  "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                  "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                  "streamName": "Custom-ClaudeActivity_CL"
+                },
+                "paging": {
+                  "pagingType": "NextPageToken",
+                  "nextPageTokenJsonPath": "$.last_id",
+                  "nextPageParaName": "after_id",
+                  "hasNextFlagJsonPath": null,
+                  "nextPageRequestHeader": "$.has_more"
+                }
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections'),'-', variables('dataConnectorVersionConnections'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('_solutionVersion')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
+      "location": "[parameters('workspace-location')]",
+      "apiVersion": "2023-04-01-preview",
+      "properties": {
+        "version": "[variables('_solutionVersion')]",
+        "kind": "Solution",
+        "contentSchemaVersion": "3.0.0",
+        "contentId": "[variables('_solutionId')]",
+        "source": {
+          "kind": "Solution",
+          "name": "[variables('_solutionName')]",
+          "sourceId": "[variables('_solutionId')]"
+        },
+        "author": {
+          "name": "[variables('_solutionAuthor')]"
+        },
+        "support": {
+          "name": "[variables('_solutionAuthor')]"
+        },
+        "dependencies": {
+          "operator": "AND",
+          "criteria": [
+            {
+              "kind": "DataConnector",
+              "contentId": "[variables('dataConnectorVersionConnectorDefinition')]",
+              "version": "[variables('_dataConnectorContentIdConnectorDefinition')]"
+            }
+          ]
+        },
+        "firstPublishDate": "2022-06-24",
+        "providers": [
+          "[variables('_solutionAuthor')]"
+        ],
+        "contentKind": "Solution",
+        "packageId": "[variables('_solutionId')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
+        "displayName": "[variables('_solutionName')]",
+        "publisherDisplayName": "[variables('_solutionId')]",
+        "descriptionHtml": "test",
+        "icon": "[variables('_packageIcon')]"
+      }
+    }
+  ]
+}
