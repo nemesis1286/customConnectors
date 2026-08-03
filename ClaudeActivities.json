@@ -576,7 +576,10 @@
                 "request": {
                   "apiEndpoint": "https://api.anthropic.com/v1/compliance/activities",
                   "httpMethod": "GET",
-                  "queryWindowInMin": 30
+                  "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+                  "queryWindowInMin": 30,
+                  "startTimeAttributeName": "created_at.gte",
+                  "endTimeAttributeName": "created_at.lt"
                 },
                 "response": {
                   "eventsJsonPaths": [
@@ -593,8 +596,7 @@
                   "pagingType": "NextPageToken",
                   "nextPageTokenJsonPath": "$.last_id",
                   "nextPageParaName": "after_id",
-                  "hasNextFlagJsonPath": null,
-                  "nextPageRequestHeader": "$.has_more"
+                  "hasNextFlagJsonPath": "$.has_more"
                 }
               }
             }
