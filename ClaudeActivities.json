@@ -217,7 +217,7 @@
               "location": "[parameters('workspace-location')]",
               "kind": null,
               "properties": {
-                "dataCollectionEndpointId": "{{DataCollectionEndpointId}}",
+                "dataCollectionEndpointId": "[concat('/subscriptions/',parameters('subscription'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]",
                 "streamDeclarations": {
                   "Custom-ClaudeActivity_CL": {
                     "columns": [
