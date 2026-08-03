@@ -281,63 +281,103 @@
               "properties": {
                 "retentionInDays": 90,
                 "schema": {
+                  "tableSubType": "DataCollectionRuleBased",
                   "name": "[variables('_logAnalyticsTableId1')]",
+                  "tableType": "CustomLog",
                   "description": "Anthropic Claude Activities data (prototype schema)",
                   "columns": [
                     {
                       "name": "TimeGenerated",
                       "type": "datetime",
-                      "description": "Time of log ingestion"
+                      "description": "Time of log ingestion",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorEmailAddress",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorIpAddress",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorType",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorUserAgent",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorUserId",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ClaudeChatId",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ClaudeProjectId",
-                      "type": "dynamic"
+                      "type": "dynamic",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "CreatedAt",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "Id",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "OrganizationId",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActivityType",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "OrganizationUuid",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     }
-                  ]
+                  ],
+                  "standardColumns": [
+                    {
+                      "name": "TenantId",
+                      "type": "guid",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
+                    }
+                  ],
+                  "solutions": [
+                    "LogManagement"
+                  ],
+                  "isTroubleshootingAllowed": true
                 }
               }
             }
