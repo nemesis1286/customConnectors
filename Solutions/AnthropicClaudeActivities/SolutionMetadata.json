@@ -1,0 +1,19 @@
+{
+  "publisherId": "azuresentinel",
+  "offerId": "azure-sentinel-solution-anthropicclaudeactivities",
+  "firstPublishDate": "2026-08-03",
+  "providers": [
+    "Anthropic"
+  ],
+  "categories": {
+    "domains": [
+      "Security - Threat Protection",
+      "IT Operations"
+    ]
+  },
+  "support": {
+    "name": "Lamar Arnau",
+    "tier": "Community",
+    "link": "https://github.com/nemesis1286/customConnectors/issues"
+  }
+}

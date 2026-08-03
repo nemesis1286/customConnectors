@@ -1,0 +1,32 @@
+{
+  "Name": "AnthropicClaudeActivities",
+  "Author": "Lamar Arnau",
+  "Logo": "<img src=\"https://raw.githubusercontent.com/nemesis1286/customConnectors/main/Logos/anthropic.svg\" width=\"75px\" height=\"75px\">",
+  "Description": "The **Anthropic Claude Activities** solution ingests the [Claude Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed) Activity Feed into Microsoft Sentinel using the Codeless Connector Framework (CCF).\n\nThe Activity Feed records every authentication, chat, file, project, administrative, and platform action that occurs in your Claude Enterprise organization. The connector uses a persistent cursor so it resumes exactly where it left off, and DCR-based ingestion-time transformations flatten the `actor` discriminated union into queryable columns.\n\n**Prerequisites:** Claude Enterprise with the Compliance API enabled, and a key carrying the `read:compliance_activities` scope.",
+  "BasePath": "https://raw.githubusercontent.com/nemesis1286/customConnectors/main/Solutions/AnthropicClaudeActivities",
+  "Version": "1.1.0",
+  "TemplateSpec": true,
+  "Is1PConnector": false,
+  "Metadata": "SolutionMetadata.json",
+  "Parsers": [
+    "Parsers/ClaudeActivity.yaml"
+  ],
+  "Analytic Rules": [
+    "Analytic Rules/ClaudeAdminApiKeyCreated.yaml",
+    "Analytic Rules/ClaudeComplianceApiUnexpectedKey.yaml",
+    "Analytic Rules/ClaudeScimPrivilegeEscalation.yaml",
+    "Analytic Rules/ClaudeMassFileActivity.yaml",
+    "Analytic Rules/ClaudeSignInFromNewIp.yaml"
+  ],
+  "Hunting Queries": [
+    "Hunting Queries/ClaudeActorTypeOverview.yaml",
+    "Hunting Queries/ClaudeUnauthenticatedEvents.yaml",
+    "Hunting Queries/ClaudeIngestionHealth.yaml"
+  ],
+  "Workbooks": [
+    "Workbooks/ClaudeActivities.json"
+  ],
+  "Data Connectors": [
+    "Data Connectors/ClaudeActivitiesCCF/ClaudeActivities_ConnectorDefinition.json"
+  ]
+}

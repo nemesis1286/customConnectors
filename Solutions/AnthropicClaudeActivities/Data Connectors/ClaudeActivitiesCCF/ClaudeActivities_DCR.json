@@ -1,0 +1,119 @@
+{
+    "name": "DCR-AnthropicClaudeActivities",
+    "apiVersion": "2022-06-01",
+    "type": "Microsoft.Insights/dataCollectionRules",
+    "location": "{{location}}",
+    "properties": {
+        "dataCollectionEndpointId": "{{dataCollectionEndpointId}}",
+        "streamDeclarations": {
+            "Custom-ClaudeActivity_CL": {
+                "columns": [
+                    {
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "organization_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "organization_uuid",
+                        "type": "string"
+                    },
+                    {
+                        "name": "type",
+                        "type": "string"
+                    },
+                    {
+                        "name": "actor",
+                        "type": "dynamic"
+                    },
+                    {
+                        "name": "claude_chat_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "claude_project_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "filename",
+                        "type": "string"
+                    },
+                    {
+                        "name": "admin_api_key_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "scopes",
+                        "type": "dynamic"
+                    },
+                    {
+                        "name": "updates",
+                        "type": "dynamic"
+                    },
+                    {
+                        "name": "mcp_server_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "decision",
+                        "type": "string"
+                    },
+                    {
+                        "name": "abuse_session_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "email_address",
+                        "type": "string"
+                    },
+                    {
+                        "name": "role_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "group_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "previous_seat_tier",
+                        "type": "string"
+                    },
+                    {
+                        "name": "current_seat_tier",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "destinations": {
+            "logAnalytics": [
+                {
+                    "workspaceResourceId": "{{workspaceResourceId}}",
+                    "name": "clv2ws1"
+                }
+            ]
+        },
+        "dataFlows": [
+            {
+                "streams": [
+                    "Custom-ClaudeActivity_CL"
+                ],
+                "destinations": [
+                    "clv2ws1"
+                ],
+                "outputStream": "Custom-ClaudeActivity_CL",
+                "transformKql": "source\n| extend TimeGenerated = todatetime(created_at), EventVendor = \"Anthropic\", EventProduct = \"Claude\", ActorType = tostring(actor.type)\n| extend ActorUserId = tostring(actor.user_id), ActorEmailAddress = tostring(coalesce(actor.email_address, actor.unauthenticated_email_address)), ActorIpAddress = tostring(actor.ip_address), ActorUserAgent = tostring(actor.user_agent), ActorApiKeyId = tostring(actor.api_key_id), ActorAdminApiKeyId = tostring(actor.admin_api_key_id), ActorServiceAccountId = tostring(actor.service_account_id), ActorService = tostring(actor.service), ActorDirectoryId = tostring(actor.directory_id), ActorWorkosEventId = tostring(actor.workos_event_id), ActorIdpConnectionType = tostring(actor.idp_connection_type), ActorIssuer = tostring(actor.issuer), ActorSubject = tostring(actor.subject), ActorAudience = actor.audience\n| project-rename Actor = actor, ActivityId = id, ActivityType = type, EventCreationTime = created_at, OrganizationId = organization_id, OrganizationUuid = organization_uuid, ClaudeChatId = claude_chat_id, ClaudeProjectId = claude_project_id, FileName = filename, AdminApiKeyId = admin_api_key_id, ApiKeyId = api_key_id, Scopes = scopes, Updates = updates, McpServerId = mcp_server_id, Decision = decision, AbuseSessionId = abuse_session_id, TargetEmailAddress = email_address, RoleId = role_id, GroupId = group_id, PreviousSeatTier = previous_seat_tier, CurrentSeatTier = current_seat_tier"
+            }
+        ]
+    }
+}

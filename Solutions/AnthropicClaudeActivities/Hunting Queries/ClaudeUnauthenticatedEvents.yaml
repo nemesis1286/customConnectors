@@ -1,0 +1,31 @@
+id: 2222185a-8ea2-4652-b39b-207609d55135
+name: Claude - Pre-authentication and failed sign-in activity
+description: |
+  'Surfaces activity from unauthenticated_user_actor -- actions that occurred before sign-in
+  completed, such as sso_login_initiated. Clusters by source IP and attempted email address to
+  reveal password spraying or account enumeration against the organization''s Claude tenant.
+  These events carry no organization_id, so they are easy to miss in org-scoped queries.'
+requiredDataConnectors:
+  - connectorId: AnthropicClaudeActivitiesCCFDefinition
+    dataTypes:
+      - ClaudeActivity_CL
+tactics:
+  - CredentialAccess
+  - Discovery
+relevantTechniques:
+  - T1110
+  - T1589
+query: |
+  ClaudeActivity_CL
+  | where TimeGenerated > ago(7d)
+  | where ActorType == "unauthenticated_user_actor"
+  | summarize
+      Attempts        = count(),
+      DistinctEmails  = dcount(ActorEmailAddress),
+      Emails          = make_set(ActorEmailAddress, 50),
+      Activities      = make_set(ActivityType, 10),
+      FirstSeen       = min(TimeGenerated),
+      LastSeen        = max(TimeGenerated)
+      by ActorIpAddress, ActorUserAgent
+  | sort by DistinctEmails desc, Attempts desc
+version: 1.0.0

@@ -1,0 +1,124 @@
+{
+    "name": "AnthropicClaudeActivitiesCCFDefinition",
+    "apiVersion": "2022-09-01-preview",
+    "type": "Microsoft.SecurityInsights/dataConnectorDefinitions",
+    "location": "{{location}}",
+    "kind": "Customizable",
+    "properties": {
+        "connectorUiConfig": {
+            "id": "AnthropicClaudeActivitiesCCFDefinition",
+            "title": "Anthropic Claude Activities (via Codeless Connector Framework)",
+            "publisher": "Lamar Arnau",
+            "logo": "anthropic.svg",
+            "descriptionMarkdown": "The [Anthropic Claude Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed) Activity Feed records every authentication, chat, file, project, administrative, and platform action that occurs in your organization. This connector ingests the Activity Feed into Microsoft Sentinel using the Codeless Connector Framework (CCF), and uses DCR-based ingestion-time transformations to flatten the `actor` discriminated union into queryable columns so that analytics rules and hunting queries do not need to re-parse it.\n\nRequires Claude Enterprise with the Compliance API enabled.",
+            "graphQueriesTableName": "ClaudeActivity_CL",
+            "dataTypes": [
+                {
+                    "name": "{{graphQueriesTableName}}",
+                    "lastDataReceivedQuery": "{{graphQueriesTableName}}\n| summarize Time = max(TimeGenerated)\n| where isnotempty(Time)"
+                }
+            ],
+            "availability": {
+                "isPreview": true,
+                "status": 1
+            },
+            "graphQueries": [
+                {
+                    "metricName": "Total data received",
+                    "legend": "Anthropic Claude Activities",
+                    "baseQuery": "{{graphQueriesTableName}}"
+                }
+            ],
+            "sampleQueries": [
+                {
+                    "description": "Recent Claude activity by type",
+                    "query": "{{graphQueriesTableName}}\n| summarize Events = count() by ActivityType\n| sort by Events desc"
+                },
+                {
+                    "description": "Administrative actions by actor",
+                    "query": "{{graphQueriesTableName}}\n| where isnotempty(AdminApiKeyId) or ActorType == \"admin_api_key_actor\"\n| project TimeGenerated, ActivityType, ActorType, ActorEmailAddress, ActorIpAddress, AdminApiKeyId\n| sort by TimeGenerated desc"
+                },
+                {
+                    "description": "Compliance API access audit",
+                    "query": "{{graphQueriesTableName}}\n| where ActivityType == \"compliance_api_accessed\"\n| summarize Calls = count() by ActorApiKeyId, ActorIpAddress\n| sort by Calls desc"
+                }
+            ],
+            "permissions": {
+                "resourceProvider": [
+                    {
+                        "provider": "Microsoft.OperationalInsights/workspaces",
+                        "permissionsDisplayText": "Read and Write permissions are required.",
+                        "providerDisplayName": "Workspace",
+                        "scope": "Workspace",
+                        "requiredPermissions": {
+                            "write": true,
+                            "read": true,
+                            "delete": true
+                        }
+                    }
+                ],
+                "customs": [
+                    {
+                        "name": "Claude Enterprise with the Compliance API enabled",
+                        "description": "The Compliance API is available to Claude Enterprise organizations. See [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access) to enable it."
+                    },
+                    {
+                        "name": "Compliance API key with the read:compliance_activities scope",
+                        "description": "Either a Compliance Access Key (`sk-ant-api01-...`) or an Admin API key (`sk-ant-admin01-...`) carrying the `read:compliance_activities` scope. See [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access) for the conditions under which each key type carries the scope."
+                    }
+                ]
+            },
+            "instructionSteps": [
+                {
+                    "title": "Obtain a Claude Compliance API key",
+                    "description": "Claude Enterprise is required to enable the Compliance API and obtain a key with the `read:compliance_activities` scope.\n\nFor detailed steps on how to enable the Compliance API, generate the key, and the permissions required, see the Claude documentation: https://platform.claude.com/docs/en/manage-claude/compliance-api-access\n",
+                    "instructions": [
+                        {
+                            "type": "Textbox",
+                            "parameters": {
+                                "label": "API Key",
+                                "placeholder": "sk-ant-api01-...",
+                                "type": "password",
+                                "name": "apiKey",
+                                "validations": {
+                                    "required": true
+                                }
+                            }
+                        },
+                        {
+                            "type": "Textbox",
+                            "parameters": {
+                                "label": "Ingest activities from (RFC 3339 UTC)",
+                                "placeholder": "2026-08-01T00:00:00Z",
+                                "type": "text",
+                                "name": "startDate",
+                                "validations": {
+                                    "required": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "title": "Connect",
+                    "description": "Enable the data connector. The connector keeps a persistent cursor, so it resumes from where it left off on every polling cycle. The start date above only bounds the oldest activity retrieved on the very first run -- set it recently to avoid a large initial backfill, or further back to deliberately backfill history (the Activity Feed is retained for 6 years).",
+                    "instructions": [
+                        {
+                            "type": "ConnectionToggleButton",
+                            "parameters": {
+                                "connectLabel": "Connect",
+                                "disconnectLabel": "Disconnect",
+                                "name": "toggle"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "connectivityCriteria": [
+                {
+                    "type": "HasDataConnectors"
+                }
+            ]
+        }
+    }
+}

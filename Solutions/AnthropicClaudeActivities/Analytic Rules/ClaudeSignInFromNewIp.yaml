@@ -1,0 +1,57 @@
+id: 24a8af6b-4eb1-40a3-89a6-94518a0445ab
+name: Claude - Sign-in from a new source IP for a known user
+description: |
+  'Detects a Claude authentication event for a user from a source IP address that has not been
+  seen for that user over the previous 14 days. Useful for spotting session hijacking or
+  credential reuse against claude.ai. Pair with your IdP and VPN logs by joining on ActorUserId,
+  which Anthropic documents as the stable identifier -- prefer it over email, which changes.'
+severity: Low
+status: Available
+requiredDataConnectors:
+  - connectorId: AnthropicClaudeActivitiesCCFDefinition
+    dataTypes:
+      - ClaudeActivity_CL
+queryFrequency: 1h
+queryPeriod: 14d
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - InitialAccess
+  - CredentialAccess
+relevantTechniques:
+  - T1078
+  - T1550
+query: |
+  let lookback = 14d;
+  let detectionWindow = 1h;
+  let authActivity = dynamic(["sso_", "login", "sign_in", "session_"]);
+  let baseline =
+      ClaudeActivity_CL
+      | where TimeGenerated between (ago(lookback) .. ago(detectionWindow))
+      | where isnotempty(ActorUserId) and isnotempty(ActorIpAddress)
+      | summarize by ActorUserId, ActorIpAddress;
+  ClaudeActivity_CL
+  | where TimeGenerated > ago(detectionWindow)
+  | where ActivityType has_any (authActivity)
+  | where isnotempty(ActorUserId) and isnotempty(ActorIpAddress)
+  | join kind=leftanti baseline on ActorUserId, ActorIpAddress
+  | summarize
+      FirstSeen  = min(TimeGenerated),
+      LastSeen   = max(TimeGenerated),
+      Events     = count(),
+      Activities = make_set(ActivityType, 10),
+      UserAgents = make_set(ActorUserAgent, 5)
+      by ActorUserId, ActorEmailAddress, ActorIpAddress, OrganizationId
+entityMappings:
+  - entityType: Account
+    fieldMappings:
+      - identifier: Name
+        columnName: ActorEmailAddress
+      - identifier: AadUserId
+        columnName: ActorUserId
+  - entityType: IP
+    fieldMappings:
+      - identifier: Address
+        columnName: ActorIpAddress
+version: 1.0.0
+kind: Scheduled

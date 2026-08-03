@@ -1,0 +1,58 @@
+id: 3323de97-8e45-4389-abdb-5dc7bf338de4
+Function:
+  Title: Parser for ClaudeActivity
+  Version: '1.0.0'
+  LastUpdated: '2026-08-03'
+Category: Microsoft Sentinel Parser
+FunctionName: ClaudeActivity
+FunctionAlias: ClaudeActivity
+FunctionQuery: |
+    // Normalizing parser for the Anthropic Claude Compliance API Activity Feed.
+    //
+    // Responsibilities:
+    //   1. Deduplicate on ActivityId. The Activity Feed is an at-least-once feed by
+    //      Anthropic's own contract -- a retry after a partial failure can re-deliver
+    //      activities that were already stored, so callers are expected to dedupe on id.
+    //   2. Collapse the actor discriminated union into a single ActorId / ActorDisplayName
+    //      pair so downstream rules do not need to branch on ActorType.
+    //   3. Exclude the connector's own compliance_api_accessed events by default so routine
+    //      queries are not dominated by polling noise. Query ClaudeActivity_CL directly, or
+    //      use ClaudeComplianceApiAccess below, when you need that audit trail.
+    let ClaudeActivityAll = view () {
+        ClaudeActivity_CL
+        | summarize arg_min(TimeGenerated, *) by ActivityId
+        | extend
+            ActorId = case(
+                ActorType == "user_actor",                 ActorUserId,
+                ActorType == "api_actor",                  ActorApiKeyId,
+                ActorType == "admin_api_key_actor",        ActorAdminApiKeyId,
+                ActorType == "service_account_actor",      ActorServiceAccountId,
+                ActorType == "scim_directory_sync_actor",  ActorDirectoryId,
+                ActorType == "federated_identity_actor",   ActorSubject,
+                ActorType == "system_actor",               ActorService,
+                ""),
+            ActorDisplayName = case(
+                isnotempty(ActorEmailAddress),             ActorEmailAddress,
+                ActorType == "api_actor",                  strcat("api-key:", ActorApiKeyId),
+                ActorType == "admin_api_key_actor",        strcat("admin-key:", ActorAdminApiKeyId),
+                ActorType == "service_account_actor",      strcat("service-account:", ActorServiceAccountId),
+                ActorType == "scim_directory_sync_actor",  strcat("scim:", ActorIdpConnectionType),
+                ActorType == "federated_identity_actor",   strcat(ActorIssuer, "/", ActorSubject),
+                ActorType == "system_actor",               strcat("system:", ActorService),
+                ActorType == "anthropic_actor",            "anthropic",
+                ActorType == "unauthenticated_user_actor", coalesce(ActorEmailAddress, "unauthenticated"),
+                ActorType),
+            // Coarse buckets over the several hundred distinct activity types.
+            ActivityCategory = case(
+                ActivityType startswith "claude_chat_",       "Chat",
+                ActivityType startswith "claude_project_",    "Project",
+                ActivityType startswith "claude_file_",       "File",
+                ActivityType startswith "admin_",             "Administrative",
+                ActivityType startswith "platform_api_key_",  "ApiKey",
+                ActivityType startswith "sso_",               "Authentication",
+                ActivityType startswith "compliance_api_",    "ComplianceApi",
+                ActivityType startswith "abuse_",             "Abuse",
+                "Other")
+    };
+    ClaudeActivityAll
+    | where ActivityType != "compliance_api_accessed"

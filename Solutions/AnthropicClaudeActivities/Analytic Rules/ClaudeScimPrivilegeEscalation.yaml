@@ -1,0 +1,52 @@
+id: afd2d295-9f45-4511-b2f4-4946ba0e4575
+name: Claude - SCIM or IdP-driven role and group change
+description: |
+  'Detects role and group membership changes in Claude that were pushed by an identity provider
+  through SCIM directory sync, or performed with an Admin API key, rather than by a signed-in
+  administrator in the UI. These paths bypass interactive admin review, so an attacker who has
+  compromised the IdP connection or an admin key can grant themselves elevated Claude access
+  without a human ever clicking approve.'
+severity: Medium
+status: Available
+requiredDataConnectors:
+  - connectorId: AnthropicClaudeActivitiesCCFDefinition
+    dataTypes:
+      - ClaudeActivity_CL
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - PrivilegeEscalation
+  - Persistence
+relevantTechniques:
+  - T1098
+  - T1136
+query: |
+  ClaudeActivity
+  | where ActorType in ("scim_directory_sync_actor", "admin_api_key_actor")
+  | where isnotempty(RoleId) or isnotempty(GroupId)
+      or ActivityType has_any ("role", "group", "seat_tier")
+  | project
+      TimeGenerated,
+      ActivityType,
+      ActivityCategory,
+      RoleId,
+      GroupId,
+      PreviousSeatTier,
+      CurrentSeatTier,
+      TargetEmailAddress,
+      ActorType,
+      ActorDisplayName,
+      ActorId,
+      ActorIdpConnectionType,
+      ActorDirectoryId,
+      ActorAdminApiKeyId,
+      OrganizationId
+entityMappings:
+  - entityType: Account
+    fieldMappings:
+      - identifier: Name
+        columnName: TargetEmailAddress
+version: 1.0.0
+kind: Scheduled

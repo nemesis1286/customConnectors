@@ -1,0 +1,280 @@
+{
+    "name": "ClaudeActivity_CL",
+    "apiVersion": "2022-10-01",
+    "type": "Microsoft.OperationalInsights/workspaces/tables",
+    "location": "{{location}}",
+    "kind": null,
+    "properties": {
+        "retentionInDays": 90,
+        "schema": {
+            "name": "ClaudeActivity_CL",
+            "columns": [
+                {
+                    "name": "TimeGenerated",
+                    "type": "datetime",
+                    "description": "Time the activity occurred, from created_at",
+                    "isDefaultDisplay": true,
+                    "isHidden": false
+                },
+                {
+                    "name": "EventCreationTime",
+                    "type": "datetime",
+                    "description": "Original created_at value from the Activity Feed",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "EventVendor",
+                    "type": "string",
+                    "description": "Always 'Anthropic'",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "EventProduct",
+                    "type": "string",
+                    "description": "Always 'Claude'",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActivityId",
+                    "type": "string",
+                    "description": "Unique identifier for the activity; deduplicate on this field",
+                    "isDefaultDisplay": true,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActivityType",
+                    "type": "string",
+                    "description": "The activity type, for example claude_chat_created",
+                    "isDefaultDisplay": true,
+                    "isHidden": false
+                },
+                {
+                    "name": "OrganizationId",
+                    "type": "string",
+                    "description": "Organization where the activity occurred; null for events not tied to an organization",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "OrganizationUuid",
+                    "type": "string",
+                    "description": "Same scoping as OrganizationId, expressed as a UUID",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "Actor",
+                    "type": "dynamic",
+                    "description": "Raw actor object, preserved so unrecognized actor types are not lost",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorType",
+                    "type": "string",
+                    "description": "Actor union discriminator, for example user_actor or api_actor",
+                    "isDefaultDisplay": true,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorUserId",
+                    "type": "string",
+                    "description": "Stable opaque user identifier; preferred SIEM join key",
+                    "isDefaultDisplay": true,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorEmailAddress",
+                    "type": "string",
+                    "description": "Actor email, or unauthenticated email for pre-sign-in events",
+                    "isDefaultDisplay": true,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorIpAddress",
+                    "type": "string",
+                    "isDefaultDisplay": true,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorUserAgent",
+                    "type": "string",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorApiKeyId",
+                    "type": "string",
+                    "description": "Set when actor.type is api_actor",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorAdminApiKeyId",
+                    "type": "string",
+                    "description": "Set when actor.type is admin_api_key_actor",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorServiceAccountId",
+                    "type": "string",
+                    "description": "Set when actor.type is service_account_actor",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorService",
+                    "type": "string",
+                    "description": "Set when actor.type is system_actor",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorDirectoryId",
+                    "type": "string",
+                    "description": "Set when actor.type is scim_directory_sync_actor",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorWorkosEventId",
+                    "type": "string",
+                    "description": "Set when actor.type is scim_directory_sync_actor",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorIdpConnectionType",
+                    "type": "string",
+                    "description": "IdP connection type, for example OktaSCIMV2 or AzureSCIMV2",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorIssuer",
+                    "type": "string",
+                    "description": "Set when actor.type is federated_identity_actor",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorSubject",
+                    "type": "string",
+                    "description": "Set when actor.type is federated_identity_actor",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ActorAudience",
+                    "type": "dynamic",
+                    "description": "Set when actor.type is federated_identity_actor",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ClaudeChatId",
+                    "type": "string",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ClaudeProjectId",
+                    "type": "string",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "FileName",
+                    "type": "string",
+                    "description": "Set on file and project attachment activities",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "AdminApiKeyId",
+                    "type": "string",
+                    "description": "Target admin API key on admin_api_key_* activities",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "ApiKeyId",
+                    "type": "string",
+                    "description": "Target API key on platform_api_key_* activities",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "Scopes",
+                    "type": "dynamic",
+                    "description": "Scopes granted on admin_api_key_created",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "Updates",
+                    "type": "dynamic",
+                    "description": "Changed values on admin_api_key_updated",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "McpServerId",
+                    "type": "string",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "Decision",
+                    "type": "string",
+                    "description": "Set on abuse_decision_received and admin_connector_request_resolved",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "AbuseSessionId",
+                    "type": "string",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "TargetEmailAddress",
+                    "type": "string",
+                    "description": "Subject email on organization and user activities, distinct from ActorEmailAddress",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "RoleId",
+                    "type": "string",
+                    "description": "Set on RBAC activities",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "GroupId",
+                    "type": "string",
+                    "description": "Set on group activities",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "PreviousSeatTier",
+                    "type": "string",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                },
+                {
+                    "name": "CurrentSeatTier",
+                    "type": "string",
+                    "isDefaultDisplay": false,
+                    "isHidden": false
+                }
+            ]
+        }
+    }
+}

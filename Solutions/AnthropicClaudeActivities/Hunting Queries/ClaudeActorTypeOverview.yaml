@@ -1,0 +1,24 @@
+id: 574c7beb-f81a-4dc6-9a4e-c0d8e8c02a10
+name: Claude - Activity breakdown by actor type
+description: |
+  'Summarizes Claude activity by actor type and category over the last 7 days. Useful as a
+  first-run sanity check that the connector is capturing the full actor discriminated union --
+  if only user_actor appears, the DCR stream declaration or transform is dropping fields.'
+requiredDataConnectors:
+  - connectorId: AnthropicClaudeActivitiesCCFDefinition
+    dataTypes:
+      - ClaudeActivity_CL
+tactics:
+  - Discovery
+relevantTechniques:
+  - T1087
+query: |
+  ClaudeActivity_CL
+  | where TimeGenerated > ago(7d)
+  | summarize
+      Events = count(),
+      DistinctActivityTypes = dcount(ActivityType),
+      DistinctActors = dcount(ActorUserId)
+      by ActorType
+  | sort by Events desc
+version: 1.0.0

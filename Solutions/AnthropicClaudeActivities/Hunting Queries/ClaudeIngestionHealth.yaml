@@ -1,0 +1,29 @@
+id: 14cad01c-a203-4f6e-a450-5fc8a68f5760
+name: Claude - Connector ingestion health and duplicate rate
+description: |
+  'Operational health check for the Claude Activities connector. Reports the lag between when an
+  activity occurred (TimeGenerated, derived from created_at) and when Sentinel ingested it, plus
+  the duplicate rate on ActivityId. The Activity Feed is an at-least-once feed, so a low
+  duplicate rate is expected and healthy; a sudden spike suggests the persistent cursor is
+  resetting and replaying, and a growing lag suggests the poller is falling behind.'
+requiredDataConnectors:
+  - connectorId: AnthropicClaudeActivitiesCCFDefinition
+    dataTypes:
+      - ClaudeActivity_CL
+tactics:
+  - Discovery
+relevantTechniques:
+  - T1087
+query: |
+  ClaudeActivity_CL
+  | where TimeGenerated > ago(24h)
+  | extend IngestionLag = ingestion_time() - TimeGenerated
+  | summarize
+      Events            = count(),
+      DistinctActivities = dcount(ActivityId),
+      MedianLagSeconds  = percentile(todouble(datetime_diff('second', ingestion_time(), TimeGenerated)), 50),
+      P99LagSeconds     = percentile(todouble(datetime_diff('second', ingestion_time(), TimeGenerated)), 99)
+      by bin(TimeGenerated, 1h)
+  | extend DuplicateRate = round(todouble(Events - DistinctActivities) / todouble(Events), 4)
+  | sort by TimeGenerated desc
+version: 1.0.0

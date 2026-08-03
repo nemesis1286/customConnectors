@@ -1,0 +1,136 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## Anthropic Claude Activities\n\nOverview of the Claude Compliance API Activity Feed ingested into Microsoft Sentinel.\n\n`TimeGenerated` is the time the activity actually occurred (from `created_at`), not the time Sentinel ingested it. The feed is at-least-once, so counts here are deduplicated on `ActivityId` where it matters."
+      },
+      "name": "title"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "5b3f1a04-2f6e-4f0e-9d5a-0d2c8f7a1b01",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time range",
+            "type": 4,
+            "typeSettings": {
+              "selectableValues": [
+                { "durationMs": 86400000 },
+                { "durationMs": 604800000 },
+                { "durationMs": 2592000000 }
+              ]
+            },
+            "value": { "durationMs": 604800000 }
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "ClaudeActivity_CL\n| summarize Activities = dcount(ActivityId), Actors = dcount(ActorUserId), ActivityTypes = dcount(ActivityType), Organizations = dcount(OrganizationId)",
+        "size": 4,
+        "title": "Volume summary",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "tiles"
+      },
+      "name": "summary"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "ClaudeActivity_CL\n| summarize Activities = dcount(ActivityId) by bin(TimeGenerated, 1h), ActorType\n| render timechart",
+        "size": 0,
+        "title": "Activity over time by actor type",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "timeline"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "ClaudeActivity_CL\n| summarize Activities = dcount(ActivityId) by ActivityType\n| top 20 by Activities desc\n| render barchart",
+        "size": 0,
+        "title": "Top 20 activity types",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "topTypes"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "ClaudeActivity_CL\n| where isnotempty(ActorEmailAddress)\n| summarize Activities = dcount(ActivityId), Types = dcount(ActivityType), SourceIps = dcount(ActorIpAddress) by ActorEmailAddress, ActorUserId\n| top 25 by Activities desc",
+        "size": 0,
+        "title": "Most active users",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      },
+      "name": "topUsers"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "ClaudeActivity_CL\n| where ActorType in (\"admin_api_key_actor\", \"scim_directory_sync_actor\") or isnotempty(AdminApiKeyId) or isnotempty(RoleId) or isnotempty(GroupId)\n| project TimeGenerated, ActivityType, ActorType, ActorEmailAddress, ActorIpAddress, AdminApiKeyId, RoleId, GroupId, TargetEmailAddress\n| sort by TimeGenerated desc\n| take 100",
+        "size": 0,
+        "title": "Administrative and identity actions",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      },
+      "name": "adminActions"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "ClaudeActivity_CL\n| where ActorType == \"unauthenticated_user_actor\"\n| summarize Attempts = count(), DistinctEmails = dcount(ActorEmailAddress) by bin(TimeGenerated, 1h)\n| render columnchart",
+        "size": 0,
+        "title": "Pre-authentication activity trend",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "preAuth"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "ClaudeActivity_CL\n| summarize Events = count(), Distinct = dcount(ActivityId), P50LagSeconds = percentile(todouble(datetime_diff('second', ingestion_time(), TimeGenerated)), 50) by bin(TimeGenerated, 1h)\n| extend DuplicateRate = round(todouble(Events - Distinct) / todouble(Events), 4)\n| project TimeGenerated, Events, Distinct, DuplicateRate, P50LagSeconds\n| sort by TimeGenerated desc",
+        "size": 0,
+        "title": "Connector health: ingestion lag and duplicate rate",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      },
+      "name": "health"
+    }
+  ],
+  "fallbackResourceIds": [],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

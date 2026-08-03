@@ -1,0 +1,50 @@
+id: 83758459-6636-4405-a031-bcf62608c21c
+name: Claude - Mass file activity by a single actor
+description: |
+  'Detects a single actor performing an unusually high number of file operations in Claude within
+  a short window -- for example bulk-uploading proprietary documents into chats or projects, or
+  bulk-attaching files ahead of an exfiltration attempt. The threshold is deliberately
+  conservative; tune FileEventThreshold to your organization''s normal usage before enabling.'
+severity: Medium
+status: Available
+requiredDataConnectors:
+  - connectorId: AnthropicClaudeActivitiesCCFDefinition
+    dataTypes:
+      - ClaudeActivity_CL
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Exfiltration
+  - Collection
+relevantTechniques:
+  - T1567
+  - T1074
+query: |
+  let FileEventThreshold = 50;
+  ClaudeActivity
+  | where ActivityCategory == "File" or isnotempty(FileName)
+  | summarize
+      FileEvents  = count(),
+      DistinctFiles = dcount(FileName),
+      FileNames   = make_set(FileName, 50),
+      Activities  = make_set(ActivityType, 20),
+      SourceIps   = make_set(ActorIpAddress, 10),
+      FirstSeen   = min(TimeGenerated),
+      LastSeen    = max(TimeGenerated)
+      by ActorId, ActorDisplayName, ActorType, ActorEmailAddress, OrganizationId
+  | where FileEvents >= FileEventThreshold
+  | extend ActorIpAddress = tostring(SourceIps[0])
+  | sort by FileEvents desc
+entityMappings:
+  - entityType: Account
+    fieldMappings:
+      - identifier: Name
+        columnName: ActorDisplayName
+  - entityType: IP
+    fieldMappings:
+      - identifier: Address
+        columnName: ActorIpAddress
+version: 1.0.0
+kind: Scheduled

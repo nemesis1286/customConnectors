@@ -1,0 +1,54 @@
+id: d05b8392-7bc3-4506-9964-4babbec6a8df
+name: Claude - Compliance API accessed by an unrecognized key
+description: |
+  'Every call to the Claude Compliance API emits a compliance_api_accessed activity. This rule
+  learns the set of API key IDs that have queried the Compliance API over the previous 14 days
+  and alerts when a key outside that set appears. Because the Compliance API can read chat and
+  file content, an unfamiliar key reading it is a data-exfiltration signal.
+
+  Note: the Sentinel connector itself appears here as a known key. Confirm the learned baseline
+  matches your expected keys before enabling, and re-tune after any key rotation.'
+severity: High
+status: Available
+requiredDataConnectors:
+  - connectorId: AnthropicClaudeActivitiesCCFDefinition
+    dataTypes:
+      - ClaudeActivity_CL
+queryFrequency: 1h
+queryPeriod: 14d
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Collection
+  - Exfiltration
+relevantTechniques:
+  - T1119
+  - T1567
+query: |
+  let lookback = 14d;
+  let detectionWindow = 1h;
+  let knownKeys =
+      ClaudeActivity_CL
+      | where TimeGenerated between (ago(lookback) .. ago(detectionWindow))
+      | where ActivityType == "compliance_api_accessed"
+      | summarize by ActorApiKeyId;
+  ClaudeActivity_CL
+  | where TimeGenerated > ago(detectionWindow)
+  | where ActivityType == "compliance_api_accessed"
+  | where isnotempty(ActorApiKeyId)
+  | where ActorApiKeyId !in (knownKeys)
+  | summarize
+      FirstSeen = min(TimeGenerated),
+      LastSeen  = max(TimeGenerated),
+      Calls     = count(),
+      SourceIps = make_set(ActorIpAddress, 20),
+      UserAgents = make_set(ActorUserAgent, 10)
+      by ActorApiKeyId, OrganizationId
+  | extend ActorIpAddress = tostring(SourceIps[0])
+entityMappings:
+  - entityType: IP
+    fieldMappings:
+      - identifier: Address
+        columnName: ActorIpAddress
+version: 1.0.0
+kind: Scheduled
