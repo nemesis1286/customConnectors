@@ -39,8 +39,7 @@
       }
     },
     "apiKey": {
-      "type": "securestring",
-      "defaultValue": "-NA-"
+      "type": "securestring"
     }
   },
   "variables": {
@@ -175,16 +174,6 @@
                           }
                         }
                       ]
-                    },
-                    {
-                      "title": "Connect",
-                      "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
-                      "instructions": []
-                    },
-                    {
-                      "title": "Connect",
-                      "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
-                      "instructions": []
                     },
                     {
                       "title": "Connect",
@@ -432,16 +421,6 @@
             {
               "title": "Connect",
               "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
-              "instructions": []
-            },
-            {
-              "title": "Connect",
-              "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
-              "instructions": []
-            },
-            {
-              "title": "Connect",
-              "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
               "instructions": [
                 {
                   "type": "ConnectionToggleButton",
@@ -651,7 +630,7 @@
         "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
         "displayName": "[variables('_solutionName')]",
         "publisherDisplayName": "[variables('_solutionId')]",
-        "descriptionHtml": "test",
+        "descriptionHtml": "<p>Ingests Anthropic Claude Activity logs into Microsoft Sentinel via the Claude Compliance API, using the Codeless Connector Framework (CCF). The Activity Feed records authentication, chat, file, project, administrative, and platform actions occurring in your organization. Requires Claude Enterprise with the Compliance API enabled and a Compliance API key.</p>",
         "icon": "[variables('_packageIcon')]"
       }
     }
