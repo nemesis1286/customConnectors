@@ -39,8 +39,7 @@
       }
     },
     "apiKey": {
-      "type": "securestring",
-      "defaultValue": "-NA-"
+      "type": "securestring"
     }
   },
   "variables": {
@@ -179,16 +178,6 @@
                     {
                       "title": "Connect",
                       "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
-                      "instructions": []
-                    },
-                    {
-                      "title": "Connect",
-                      "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
-                      "instructions": []
-                    },
-                    {
-                      "title": "Connect",
-                      "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
                       "instructions": [
                         {
                           "type": "ConnectionToggleButton",
@@ -212,12 +201,12 @@
             },
             {
               "name": "DCR-AnthropicClaudeActivities",
-              "apiVersion": "2021-09-01-preview",
+              "apiVersion": "2022-06-01",
               "type": "Microsoft.Insights/dataCollectionRules",
               "location": "[parameters('workspace-location')]",
               "kind": null,
               "properties": {
-                "dataCollectionEndpointId": "{{DataCollectionEndpointId}}",
+                "dataCollectionEndpointId": "[concat('/subscriptions/',parameters('subscription'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]",
                 "streamDeclarations": {
                   "Custom-ClaudeActivity_CL": {
                     "columns": [
@@ -285,7 +274,7 @@
                 "DataSource": "(wizard-made) Anthropic Claude Activities Connector",
                 "Category": "Security"
               },
-              "apiVersion": "2021-03-01-privatepreview",
+              "apiVersion": "2022-10-01",
               "type": "Microsoft.OperationalInsights/workspaces/tables",
               "location": "[parameters('workspace-location')]",
               "kind": null,
@@ -298,55 +287,81 @@
                     {
                       "name": "TimeGenerated",
                       "type": "datetime",
-                      "description": "Time of log ingestion"
+                      "description": "Time of log ingestion",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorEmailAddress",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorIpAddress",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorType",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorUserAgent",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActorUserId",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ClaudeChatId",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ClaudeProjectId",
-                      "type": "dynamic"
+                      "type": "dynamic",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "CreatedAt",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "Id",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "OrganizationId",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "ActivityType",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     },
                     {
                       "name": "OrganizationUuid",
-                      "type": "string"
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
                     }
                   ]
                 }
@@ -428,16 +443,6 @@
                   }
                 }
               ]
-            },
-            {
-              "title": "Connect",
-              "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
-              "instructions": []
-            },
-            {
-              "title": "Connect",
-              "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
-              "instructions": []
             },
             {
               "title": "Connect",
@@ -576,7 +581,10 @@
                 "request": {
                   "apiEndpoint": "https://api.anthropic.com/v1/compliance/activities",
                   "httpMethod": "GET",
-                  "queryWindowInMin": 30
+                  "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+                  "queryWindowInMin": 30,
+                  "startTimeAttributeName": "created_at.gte",
+                  "endTimeAttributeName": "created_at.lt"
                 },
                 "response": {
                   "eventsJsonPaths": [
@@ -593,8 +601,7 @@
                   "pagingType": "NextPageToken",
                   "nextPageTokenJsonPath": "$.last_id",
                   "nextPageParaName": "after_id",
-                  "hasNextFlagJsonPath": null,
-                  "nextPageRequestHeader": "$.has_more"
+                  "hasNextFlagJsonPath": "$.has_more"
                 }
               }
             }
@@ -635,8 +642,8 @@
           "criteria": [
             {
               "kind": "DataConnector",
-              "contentId": "[variables('dataConnectorVersionConnectorDefinition')]",
-              "version": "[variables('_dataConnectorContentIdConnectorDefinition')]"
+              "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+              "version": "[variables('dataConnectorVersionConnectorDefinition')]"
             }
           ]
         },
@@ -649,7 +656,7 @@
         "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
         "displayName": "[variables('_solutionName')]",
         "publisherDisplayName": "[variables('_solutionId')]",
-        "descriptionHtml": "test",
+        "descriptionHtml": "<p>Ingests Anthropic Claude Activity logs into Microsoft Sentinel via the Claude Compliance API, using the Codeless Connector Framework (CCF). The Activity Feed records authentication, chat, file, project, administrative, and platform actions occurring in your organization. Requires Claude Enterprise with the Compliance API enabled and a Compliance API key.</p>",
         "icon": "[variables('_packageIcon')]"
       }
     }
