@@ -37,20 +37,17 @@
       "metadata": {
         "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
       }
-    },
-    "apiKey": {
-      "type": "securestring"
     }
   },
   "variables": {
     "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
     "_solutionName": "Anthropic Claude Activities",
-    "_solutionVersion": "1.0.20260729192615",
+    "_solutionVersion": "3.0.1",
     "_solutionAuthor": "Lamar Arnau",
     "_packageIcon": "icon",
     "_solutionId": "azuresentinel.azure-sentinel-solution-azuresentinel.azure-sentinel-Anthropic-Claude-Activities-dev-preview",
-    "dataConnectorVersionConnectorDefinition": "1.0.20260729192615",
-    "dataConnectorVersionConnections": "1.0.20260729192615",
+    "dataConnectorVersionConnectorDefinition": "1.0.20260810000001",
+    "dataConnectorVersionConnections": "1.0.20260810000001",
     "_solutionTier": "Community",
     "_dataConnectorContentIdConnections": "Anthropic-Claude-ActivitiesConnections",
     "dataConnectorTemplateNameConnections": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections')))]",
@@ -59,6 +56,53 @@
     "_logAnalyticsTableId1": "ClaudeActivity_CL"
   },
   "resources": [
+    {
+      "comments": "Data Collection Endpoint named after the workspace. The DCR references a DCE by this exact name; creating it here lets the connector stand up in a fresh tenant that has no DCE yet. Idempotent on environments that already have one.",
+      "type": "Microsoft.Insights/dataCollectionEndpoints",
+      "apiVersion": "2022-06-01",
+      "name": "[parameters('workspace')]",
+      "location": "[parameters('workspace-location')]",
+      "properties": {
+        "networkAcls": {
+          "publicNetworkAccess": "Enabled"
+        }
+      }
+    },
+    {
+      "comments": "Custom table created at deploy time so it exists and becomes bindable before Connect instantiates the DCR. This is what prevents the InvalidOutputTable race on a fresh Connect. Schema must stay identical to the copy inside the connector-definition mainTemplate.",
+      "type": "Microsoft.OperationalInsights/workspaces/tables",
+      "apiVersion": "2022-10-01",
+      "name": "[concat(parameters('workspace'),'/',variables('_logAnalyticsTableId1'))]",
+      "location": "[parameters('workspace-location')]",
+      "properties": {
+        "retentionInDays": 90,
+        "schema": {
+          "name": "[variables('_logAnalyticsTableId1')]",
+          "description": "Anthropic Claude Compliance API Activity Feed events",
+          "columns": [
+            { "name": "TimeGenerated", "type": "datetime", "description": "Event time of the activity (created_at)" },
+            { "name": "ActivityType", "type": "string", "description": "Activity type, for example claude_file_uploaded" },
+            { "name": "Id", "type": "string", "description": "Unique activity identifier; use for de-duplication" },
+            { "name": "CreatedAt", "type": "datetime", "description": "Time the activity occurred, as reported by Claude" },
+            { "name": "ActorType", "type": "string", "description": "Actor type, for example user_actor or api_key_actor" },
+            { "name": "ActorEmailAddress", "type": "string" },
+            { "name": "ActorUserId", "type": "string", "description": "Primary join key for correlating Claude users across events" },
+            { "name": "ActorIpAddress", "type": "string" },
+            { "name": "ActorUserAgent", "type": "string" },
+            { "name": "ActorApiKeyId", "type": "string" },
+            { "name": "ActorAdminApiKeyId", "type": "string" },
+            { "name": "ActorServiceAccountId", "type": "string" },
+            { "name": "ActorUnauthenticatedEmailAddress", "type": "string" },
+            { "name": "Actor", "type": "dynamic", "description": "Full actor object; retains fields for all actor types including SCIM, federated identity, and service accounts" },
+            { "name": "ClaudeChatId", "type": "string" },
+            { "name": "ClaudeProjectId", "type": "string" },
+            { "name": "Filename", "type": "string", "description": "File name, present on claude_file_* activities" },
+            { "name": "OrganizationId", "type": "string" },
+            { "name": "OrganizationUuid", "type": "string" }
+          ]
+        }
+      }
+    },
     {
       "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
       "apiVersion": "2023-04-01-preview",
@@ -118,10 +162,10 @@
               "properties": {
                 "connectorUiConfig": {
                   "id": "Anthropic-Claude-Activities-wizard-made-CCF",
-                  "title": "Anthropic Claude Activities (made with connector-wizard)",
+                  "title": "Anthropic Claude Activities",
                   "publisher": "Lamar Arnau",
-                  "descriptionMarkdown": "The Activity Feed records authentication, chat, file, project, administrative, and platform action that occurs in your organization.",
-                  "graphQueriesTableName": "Custom-ClaudeActivity_CL",
+                  "descriptionMarkdown": "The Claude Activity Feed records authentication, chat, file, project, administrative, and platform actions that occur in your organization. This connector polls the Claude Compliance API Activity Feed endpoint and ingests events into the **ClaudeActivity_CL** table.\n\n**Operational notes:**\n\n- Delivery is at-least-once, so duplicate events are possible. De-duplicate on `Id` at query time (see sample queries).\n- Polling begins at connect time; no historical backfill is performed. Anthropic retains activity data for 6 years and it can be backfilled separately via the Logs Ingestion API if needed.\n- Activities become queryable within roughly one minute of occurring. Because each poll window ends at poll time, an event indexed late may occasionally fall outside its window.",
+                  "graphQueriesTableName": "ClaudeActivity_CL",
                   "dataTypes": [
                     {
                       "name": "ClaudeActivity_CL",
@@ -139,7 +183,28 @@
                       "baseQuery": "{{graphQueriesTableName}}"
                     }
                   ],
-                  "sampleQueries": [],
+                  "sampleQueries": [
+                    {
+                      "description": "Most recent Claude activities",
+                      "query": "{{graphQueriesTableName}}\n| sort by TimeGenerated desc\n| take 50"
+                    },
+                    {
+                      "description": "Activity volume by type (last 7 days)",
+                      "query": "{{graphQueriesTableName}}\n| where TimeGenerated > ago(7d)\n| summarize count() by ActivityType\n| sort by count_ desc"
+                    },
+                    {
+                      "description": "File uploads to Claude",
+                      "query": "{{graphQueriesTableName}}\n| where ActivityType == \"claude_file_uploaded\"\n| project TimeGenerated, ActorEmailAddress, Filename, ActorIpAddress"
+                    },
+                    {
+                      "description": "Compliance API access auditing",
+                      "query": "{{graphQueriesTableName}}\n| where ActivityType == \"compliance_api_accessed\"\n| project TimeGenerated, ActorType, Actor"
+                    },
+                    {
+                      "description": "De-duplicated events (delivery is at-least-once)",
+                      "query": "{{graphQueriesTableName}}\n| summarize arg_min(TimeGenerated, *) by Id"
+                    }
+                  ],
                   "permissions": {
                     "resourceProvider": [
                       {
@@ -154,18 +219,24 @@
                           "action": false
                         }
                       }
+                    ],
+                    "customs": [
+                      {
+                        "name": "Claude Compliance API",
+                        "description": "Claude Enterprise with the Compliance API enabled, and a Compliance Access Key (sk-ant-api01-...) or Admin API key (sk-ant-admin01-...) carrying the `read:compliance_activities` scope."
+                      }
                     ]
                   },
                   "instructionSteps": [
                     {
                       "title": "Obtain Claude Compliance API Key",
-                      "description": "Claude Enterprise is required to enable the Compliance API and obtain the Compliance API key.\n\nFor detailed steps on how to enable the Compliance API, generate the key, and permissions required, please see the Claude documentation here: https://platform.claude.com/docs/en/manage-claude/compliance-api-access\n",
+                      "description": "Claude Enterprise is required to enable the Compliance API and obtain a Compliance API key.\n\nThe key must carry the `read:compliance_activities` scope. Either a Compliance Access Key (`sk-ant-api01-...`) or an Admin API key (`sk-ant-admin01-...`) with that scope will work.\n\nFor detailed steps on how to enable the Compliance API, generate the key, and the permissions required, see the Claude documentation here: https://platform.claude.com/docs/en/manage-claude/compliance-api-access\n",
                       "instructions": [
                         {
                           "type": "Textbox",
                           "parameters": {
-                            "label": "apiKey",
-                            "placeholder": "",
+                            "label": "Compliance API Key",
+                            "placeholder": "sk-ant-api01-...",
                             "type": "password",
                             "name": "apiKey",
                             "validations": {
@@ -177,7 +248,7 @@
                     },
                     {
                       "title": "Connect",
-                      "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
+                      "description": "Enable the data connector: Anthropic Claude Activities",
                       "instructions": [
                         {
                           "type": "ConnectionToggleButton",
@@ -192,8 +263,7 @@
                   ],
                   "connectivityCriteria": [
                     {
-                      "type": "HasDataConnectors",
-                      "value": []
+                      "type": "HasDataConnectors"
                     }
                   ]
                 }
@@ -220,10 +290,14 @@
                       },
                       {
                         "name": "claude_project_id",
-                        "type": "dynamic"
+                        "type": "string"
                       },
                       {
                         "name": "created_at",
+                        "type": "datetime"
+                      },
+                      {
+                        "name": "filename",
                         "type": "string"
                       },
                       {
@@ -262,7 +336,7 @@
                       "clv2ws1"
                     ],
                     "outputStream": "Custom-ClaudeActivity_CL",
-                    "transformKql": "source | project TimeGenerated = now(), ActorEmailAddress = tostring(actor.email_address), ActorIpAddress = tostring(actor.ip_address), ActorType = tostring(actor.type), ActorUserAgent = tostring(actor.user_agent), ActorUserId = tostring(actor.user_id), ClaudeChatId = ['claude_chat_id'], ClaudeProjectId = ['claude_project_id'], CreatedAt = ['created_at'], Id = ['id'], OrganizationId = ['organization_id'], ActivityType = ['type'], OrganizationUuid = ['organization_uuid']"
+                    "transformKql": "source\n| project TimeGenerated = iff(isnull(['created_at']), now(), todatetime(['created_at'])),\n    ActivityType = ['type'],\n    Id = ['id'],\n    CreatedAt = ['created_at'],\n    ActorType = tostring(actor.type),\n    ActorEmailAddress = tostring(actor.email_address),\n    ActorUserId = tostring(actor.user_id),\n    ActorIpAddress = tostring(actor.ip_address),\n    ActorUserAgent = tostring(actor.user_agent),\n    ActorApiKeyId = tostring(actor.api_key_id),\n    ActorAdminApiKeyId = tostring(actor.admin_api_key_id),\n    ActorServiceAccountId = tostring(actor.service_account_id),\n    ActorUnauthenticatedEmailAddress = tostring(actor.unauthenticated_email_address),\n    Actor = actor,\n    ClaudeChatId = ['claude_chat_id'],\n    ClaudeProjectId = ['claude_project_id'],\n    Filename = ['filename'],\n    OrganizationId = ['organization_id'],\n    OrganizationUuid = ['organization_uuid']"
                   }
                 ]
               }
@@ -271,7 +345,7 @@
               "name": "[variables('_logAnalyticsTableId1')]",
               "tags": {
                 "StreamName": "Custom-ClaudeActivity_CL",
-                "DataSource": "(wizard-made) Anthropic Claude Activities Connector",
+                "DataSource": "Anthropic Claude Activities Connector",
                 "Category": "Security"
               },
               "apiVersion": "2022-10-01",
@@ -282,12 +356,40 @@
                 "retentionInDays": 90,
                 "schema": {
                   "name": "[variables('_logAnalyticsTableId1')]",
-                  "description": "Anthropic Claude Activities data (prototype schema)",
+                  "description": "Anthropic Claude Compliance API Activity Feed events",
                   "columns": [
                     {
                       "name": "TimeGenerated",
                       "type": "datetime",
-                      "description": "Time of log ingestion",
+                      "description": "Event time of the activity (created_at)",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
+                    },
+                    {
+                      "name": "ActivityType",
+                      "type": "string",
+                      "description": "Activity type, for example claude_file_uploaded",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
+                    },
+                    {
+                      "name": "Id",
+                      "type": "string",
+                      "description": "Unique activity identifier; use for de-duplication",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
+                    },
+                    {
+                      "name": "CreatedAt",
+                      "type": "datetime",
+                      "description": "Time the activity occurred, as reported by Claude",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
+                    },
+                    {
+                      "name": "ActorType",
+                      "type": "string",
+                      "description": "Actor type, for example user_actor or api_key_actor",
                       "isDefaultDisplay": false,
                       "isHidden": false
                     },
@@ -298,13 +400,14 @@
                       "isHidden": false
                     },
                     {
-                      "name": "ActorIpAddress",
+                      "name": "ActorUserId",
                       "type": "string",
+                      "description": "Primary join key for correlating Claude users across events",
                       "isDefaultDisplay": false,
                       "isHidden": false
                     },
                     {
-                      "name": "ActorType",
+                      "name": "ActorIpAddress",
                       "type": "string",
                       "isDefaultDisplay": false,
                       "isHidden": false
@@ -316,8 +419,33 @@
                       "isHidden": false
                     },
                     {
-                      "name": "ActorUserId",
+                      "name": "ActorApiKeyId",
                       "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
+                    },
+                    {
+                      "name": "ActorAdminApiKeyId",
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
+                    },
+                    {
+                      "name": "ActorServiceAccountId",
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
+                    },
+                    {
+                      "name": "ActorUnauthenticatedEmailAddress",
+                      "type": "string",
+                      "isDefaultDisplay": false,
+                      "isHidden": false
+                    },
+                    {
+                      "name": "Actor",
+                      "type": "dynamic",
+                      "description": "Full actor object; retains fields for all actor types including SCIM, federated identity, and service accounts",
                       "isDefaultDisplay": false,
                       "isHidden": false
                     },
@@ -329,30 +457,19 @@
                     },
                     {
                       "name": "ClaudeProjectId",
-                      "type": "dynamic",
-                      "isDefaultDisplay": false,
-                      "isHidden": false
-                    },
-                    {
-                      "name": "CreatedAt",
                       "type": "string",
                       "isDefaultDisplay": false,
                       "isHidden": false
                     },
                     {
-                      "name": "Id",
+                      "name": "Filename",
                       "type": "string",
+                      "description": "File name, present on claude_file_* activities",
                       "isDefaultDisplay": false,
                       "isHidden": false
                     },
                     {
                       "name": "OrganizationId",
-                      "type": "string",
-                      "isDefaultDisplay": false,
-                      "isHidden": false
-                    },
-                    {
-                      "name": "ActivityType",
                       "type": "string",
                       "isDefaultDisplay": false,
                       "isHidden": false
@@ -387,10 +504,10 @@
       "properties": {
         "connectorUiConfig": {
           "id": "Anthropic-Claude-Activities-wizard-made-CCF",
-          "title": "Anthropic Claude Activities (made with connector-wizard)",
+          "title": "Anthropic Claude Activities",
           "publisher": "Lamar Arnau",
-          "descriptionMarkdown": "The Activity Feed records authentication, chat, file, project, administrative, and platform action that occurs in your organization.",
-          "graphQueriesTableName": "Custom-ClaudeActivity_CL",
+          "descriptionMarkdown": "The Claude Activity Feed records authentication, chat, file, project, administrative, and platform actions that occur in your organization. This connector polls the Claude Compliance API Activity Feed endpoint and ingests events into the **ClaudeActivity_CL** table.\n\n**Operational notes:**\n\n- Delivery is at-least-once, so duplicate events are possible. De-duplicate on `Id` at query time (see sample queries).\n- Polling begins at connect time; no historical backfill is performed. Anthropic retains activity data for 6 years and it can be backfilled separately via the Logs Ingestion API if needed.\n- Activities become queryable within roughly one minute of occurring. Because each poll window ends at poll time, an event indexed late may occasionally fall outside its window.",
+          "graphQueriesTableName": "ClaudeActivity_CL",
           "dataTypes": [
             {
               "name": "ClaudeActivity_CL",
@@ -408,7 +525,28 @@
               "baseQuery": "{{graphQueriesTableName}}"
             }
           ],
-          "sampleQueries": [],
+          "sampleQueries": [
+            {
+              "description": "Most recent Claude activities",
+              "query": "{{graphQueriesTableName}}\n| sort by TimeGenerated desc\n| take 50"
+            },
+            {
+              "description": "Activity volume by type (last 7 days)",
+              "query": "{{graphQueriesTableName}}\n| where TimeGenerated > ago(7d)\n| summarize count() by ActivityType\n| sort by count_ desc"
+            },
+            {
+              "description": "File uploads to Claude",
+              "query": "{{graphQueriesTableName}}\n| where ActivityType == \"claude_file_uploaded\"\n| project TimeGenerated, ActorEmailAddress, Filename, ActorIpAddress"
+            },
+            {
+              "description": "Compliance API access auditing",
+              "query": "{{graphQueriesTableName}}\n| where ActivityType == \"compliance_api_accessed\"\n| project TimeGenerated, ActorType, Actor"
+            },
+            {
+              "description": "De-duplicated events (delivery is at-least-once)",
+              "query": "{{graphQueriesTableName}}\n| summarize arg_min(TimeGenerated, *) by Id"
+            }
+          ],
           "permissions": {
             "resourceProvider": [
               {
@@ -423,18 +561,24 @@
                   "action": false
                 }
               }
+            ],
+            "customs": [
+              {
+                "name": "Claude Compliance API",
+                "description": "Claude Enterprise with the Compliance API enabled, and a Compliance Access Key (sk-ant-api01-...) or Admin API key (sk-ant-admin01-...) carrying the `read:compliance_activities` scope."
+              }
             ]
           },
           "instructionSteps": [
             {
               "title": "Obtain Claude Compliance API Key",
-              "description": "Claude Enterprise is required to enable the Compliance API and obtain the Compliance API key.\n\nFor detailed steps on how to enable the Compliance API, generate the key, and permissions required, please see the Claude documentation here: https://platform.claude.com/docs/en/manage-claude/compliance-api-access\n",
+              "description": "Claude Enterprise is required to enable the Compliance API and obtain a Compliance API key.\n\nThe key must carry the `read:compliance_activities` scope. Either a Compliance Access Key (`sk-ant-api01-...`) or an Admin API key (`sk-ant-admin01-...`) with that scope will work.\n\nFor detailed steps on how to enable the Compliance API, generate the key, and the permissions required, see the Claude documentation here: https://platform.claude.com/docs/en/manage-claude/compliance-api-access\n",
               "instructions": [
                 {
                   "type": "Textbox",
                   "parameters": {
-                    "label": "apiKey",
-                    "placeholder": "",
+                    "label": "Compliance API Key",
+                    "placeholder": "sk-ant-api01-...",
                     "type": "password",
                     "name": "apiKey",
                     "validations": {
@@ -446,7 +590,7 @@
             },
             {
               "title": "Connect",
-              "description": "Enable the data connector: Anthropic Claude Activities (made with connector-wizard)",
+              "description": "Enable the data connector: Anthropic Claude Activities",
               "instructions": [
                 {
                   "type": "ConnectionToggleButton",
@@ -461,8 +605,7 @@
           ],
           "connectivityCriteria": [
             {
-              "type": "HasDataConnectors",
-              "value": []
+              "type": "HasDataConnectors"
             }
           ]
         }
@@ -582,9 +725,25 @@
                   "apiEndpoint": "https://api.anthropic.com/v1/compliance/activities",
                   "httpMethod": "GET",
                   "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
-                  "queryWindowInMin": 30,
+                  "queryWindowInMin": 5,
                   "startTimeAttributeName": "created_at.gte",
-                  "endTimeAttributeName": "created_at.lt"
+                  "endTimeAttributeName": "created_at.lt",
+                  "rateLimitQPS": 2,
+                  "paginatedCallsPerSecond": 2,
+                  "rateLimitConfig": {
+                    "evaluation": {
+                      "checkMode": "OnlyWhen429"
+                    },
+                    "retryStrategy": {
+                      "useResetOrRetryAfterHeaders": true
+                    }
+                  },
+                  "retryCount": 3,
+                  "timeoutInSeconds": 60,
+                  "headers": {
+                    "Accept": "application/json",
+                    "User-Agent": "Sentinel-CCF-ClaudeActivities"
+                  }
                 },
                 "response": {
                   "eventsJsonPaths": [
@@ -601,7 +760,9 @@
                   "pagingType": "NextPageToken",
                   "nextPageTokenJsonPath": "$.last_id",
                   "nextPageParaName": "after_id",
-                  "hasNextFlagJsonPath": "$.has_more"
+                  "hasNextFlagJsonPath": "$.has_more",
+                  "pageSize": 1000,
+                  "pageSizeParameterName": "limit"
                 }
               }
             }
@@ -647,7 +808,7 @@
             }
           ]
         },
-        "firstPublishDate": "2022-06-24",
+        "firstPublishDate": "2026-08-10",
         "providers": [
           "[variables('_solutionAuthor')]"
         ],
@@ -655,8 +816,8 @@
         "packageId": "[variables('_solutionId')]",
         "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
         "displayName": "[variables('_solutionName')]",
-        "publisherDisplayName": "[variables('_solutionId')]",
-        "descriptionHtml": "<p>Ingests Anthropic Claude Activity logs into Microsoft Sentinel via the Claude Compliance API, using the Codeless Connector Framework (CCF). The Activity Feed records authentication, chat, file, project, administrative, and platform actions occurring in your organization. Requires Claude Enterprise with the Compliance API enabled and a Compliance API key.</p>",
+        "publisherDisplayName": "[variables('_solutionAuthor')]",
+        "descriptionHtml": "<p>Ingests Anthropic Claude Activity logs into Microsoft Sentinel via the Claude Compliance API, using the Codeless Connector Framework (CCF). The Activity Feed records authentication, chat, file, project, administrative, and platform actions occurring in your organization. Requires Claude Enterprise with the Compliance API enabled and a Compliance API key carrying the <code>read:compliance_activities</code> scope.</p>",
         "icon": "[variables('_packageIcon')]"
       }
     }
