@@ -23,7 +23,7 @@
     "resourceGroupName": "[resourceGroup().name]",
     "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
     "_solutionName": "Anthropic Claude Activities",
-    "_solutionVersion": "3.0.2",
+    "_solutionVersion": "3.0.3",
     "_solutionAuthor": "Lamar Arnau",
     "_packageIcon": "icon",
     "_solutionId": "azuresentinel.azure-sentinel-solution-azuresentinel.azure-sentinel-Anthropic-Claude-Activities-dev-preview",
@@ -38,7 +38,67 @@
     "_parserName1": "ClaudeActivity",
     "_parserContentId1": "ClaudeActivity-Parser",
     "parserVersion1": "1.0.0",
-    "parserTemplateSpecName1": "[concat(parameters('workspace'),'-pr-',uniquestring(variables('_parserContentId1')))]"
+    "parserTemplateSpecName1": "[concat(parameters('workspace'),'-pr-',uniquestring(variables('_parserContentId1')))]",
+    "_analyticRuleContentId1": "ClaudeActivity-SSOAuthControlsModified",
+    "analyticRuleVersion1": "1.0.0",
+    "analyticRuleTemplateSpecName1": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId1')))]",
+    "_analyticRuleContentId2": "ClaudeActivity-IPRestrictionsModified",
+    "analyticRuleVersion2": "1.0.0",
+    "analyticRuleTemplateSpecName2": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId2')))]",
+    "_analyticRuleContentId3": "ClaudeActivity-NewCredentialCreated",
+    "analyticRuleVersion3": "1.0.0",
+    "analyticRuleTemplateSpecName3": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId3')))]",
+    "_analyticRuleContentId4": "ClaudeActivity-PrivilegedRoleChange",
+    "analyticRuleVersion4": "1.0.0",
+    "analyticRuleTemplateSpecName4": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId4')))]",
+    "_analyticRuleContentId5": "ClaudeActivity-AuthFailureSpike",
+    "analyticRuleVersion5": "1.0.0",
+    "analyticRuleTemplateSpecName5": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId5')))]",
+    "_analyticRuleContentId6": "ClaudeActivity-DataExport",
+    "analyticRuleVersion6": "1.0.0",
+    "analyticRuleTemplateSpecName6": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId6')))]",
+    "_analyticRuleContentId7": "ClaudeActivity-MassContentDeletion",
+    "analyticRuleVersion7": "1.0.0",
+    "analyticRuleTemplateSpecName7": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId7')))]",
+    "_analyticRuleContentId8": "ClaudeActivity-AccessDeniedProbing",
+    "analyticRuleVersion8": "1.0.0",
+    "analyticRuleTemplateSpecName8": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId8')))]",
+    "_analyticRuleContentId9": "ClaudeActivity-MCPConnectorChange",
+    "analyticRuleVersion9": "1.0.0",
+    "analyticRuleTemplateSpecName9": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId9')))]",
+    "_analyticRuleContentId10": "ClaudeActivity-GuardrailRelaxed",
+    "analyticRuleVersion10": "1.0.0",
+    "analyticRuleTemplateSpecName10": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId10')))]",
+    "_analyticRuleContentId11": "ClaudeActivity-PublicContentSharing",
+    "analyticRuleVersion11": "1.0.0",
+    "analyticRuleTemplateSpecName11": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId11')))]",
+    "_analyticRuleContentId12": "ClaudeActivity-ComplianceApiNewConsumer",
+    "analyticRuleVersion12": "1.0.0",
+    "analyticRuleTemplateSpecName12": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId12')))]",
+    "_analyticRuleContentId13": "ClaudeActivity-InviteAbuse",
+    "analyticRuleVersion13": "1.0.0",
+    "analyticRuleTemplateSpecName13": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId13')))]",
+    "_analyticRuleContentId14": "ClaudeActivity-AnthropicOperatorAccess",
+    "analyticRuleVersion14": "1.0.0",
+    "analyticRuleTemplateSpecName14": "[concat(parameters('workspace'),'-ar-',uniquestring(variables('_analyticRuleContentId14')))]",
+    "_huntingQueryContentId1": "ClaudeActivity-Hunt-OffHoursAdmin",
+    "huntingQueryVersion1": "1.0.0",
+    "huntingQueryTemplateSpecName1": "[concat(parameters('workspace'),'-hq-',uniquestring(variables('_huntingQueryContentId1')))]",
+    "_huntingQueryContentId2": "ClaudeActivity-Hunt-FirstSeenAdminIP",
+    "huntingQueryVersion2": "1.0.0",
+    "huntingQueryTemplateSpecName2": "[concat(parameters('workspace'),'-hq-',uniquestring(variables('_huntingQueryContentId2')))]",
+    "_huntingQueryContentId3": "ClaudeActivity-Hunt-DormantAccountResumed",
+    "huntingQueryVersion3": "1.0.0",
+    "huntingQueryTemplateSpecName3": "[concat(parameters('workspace'),'-hq-',uniquestring(variables('_huntingQueryContentId3')))]",
+    "_huntingQueryContentId4": "ClaudeActivity-Hunt-ScimDirectoryAnomalies",
+    "huntingQueryVersion4": "1.0.0",
+    "huntingQueryTemplateSpecName4": "[concat(parameters('workspace'),'-hq-',uniquestring(variables('_huntingQueryContentId4')))]",
+    "_huntingQueryContentId5": "ClaudeActivity-Hunt-ActivityVolumeAnomaly",
+    "huntingQueryVersion5": "1.0.0",
+    "huntingQueryTemplateSpecName5": "[concat(parameters('workspace'),'-hq-',uniquestring(variables('_huntingQueryContentId5')))]",
+    "_huntingQueryContentId6": "ClaudeActivity-Hunt-ComplianceApiConsumers",
+    "huntingQueryVersion6": "1.0.0",
+    "huntingQueryTemplateSpecName6": "[concat(parameters('workspace'),'-hq-',uniquestring(variables('_huntingQueryContentId6')))]"
   },
   "resources": [
     {
@@ -65,16 +125,52 @@
           "name": "[variables('_logAnalyticsTableId1')]",
           "description": "Anthropic Claude Compliance API Activity Feed events",
           "columns": [
-            { "name": "TimeGenerated", "type": "datetime", "description": "Event time of the activity (created_at)" },
-            { "name": "ActivityType", "type": "string", "description": "Activity type, for example claude_file_uploaded" },
-            { "name": "Id", "type": "string", "description": "Unique activity identifier; use for de-duplication" },
-            { "name": "CreatedAt", "type": "datetime", "description": "Time the activity occurred, as reported by Claude" },
-            { "name": "Actor", "type": "dynamic", "description": "Full actor object; retains fields for all actor types including SCIM, federated identity, and service accounts. Flattened into Actor* fields at query time by the ClaudeActivity parser." },
-            { "name": "ClaudeChatId", "type": "string" },
-            { "name": "ClaudeProjectId", "type": "string" },
-            { "name": "Filename", "type": "string", "description": "File name, present on claude_file_* activities" },
-            { "name": "OrganizationId", "type": "string" },
-            { "name": "OrganizationUuid", "type": "string" }
+            {
+              "name": "TimeGenerated",
+              "type": "datetime",
+              "description": "Event time of the activity (created_at)"
+            },
+            {
+              "name": "ActivityType",
+              "type": "string",
+              "description": "Activity type, for example claude_file_uploaded"
+            },
+            {
+              "name": "Id",
+              "type": "string",
+              "description": "Unique activity identifier; use for de-duplication"
+            },
+            {
+              "name": "CreatedAt",
+              "type": "datetime",
+              "description": "Time the activity occurred, as reported by Claude"
+            },
+            {
+              "name": "Actor",
+              "type": "dynamic",
+              "description": "Full actor object; retains fields for all actor types including SCIM, federated identity, and service accounts. Flattened into Actor* fields at query time by the ClaudeActivity parser."
+            },
+            {
+              "name": "ClaudeChatId",
+              "type": "string"
+            },
+            {
+              "name": "ClaudeProjectId",
+              "type": "string"
+            },
+            {
+              "name": "Filename",
+              "type": "string",
+              "description": "File name, present on claude_file_* activities"
+            },
+            {
+              "name": "OrganizationId",
+              "type": "string"
+            },
+            {
+              "name": "OrganizationUuid",
+              "type": "string"
+            }
           ]
         }
       }
@@ -782,6 +878,2050 @@
       }
     },
     {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName1'), variables('analyticRuleVersion1'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId1')]",
+        "displayName": "Anthropic Claude - SSO or authentication controls modified",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion1')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId1')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects changes to the Claude organization's SSO and authentication controls: SSO toggled, an SSO connection deactivated or deleted, the provisioning mode changed, SSO group-to-role mappings updated, or the magic-link second factor toggled. Disabling or weakening federated authentication can open sign-in paths that bypass your identity provider - a common persistence and defense-evasion step after an admin account compromise. Verify the change was an approved identity-team action; if not, re-enable SSO, review recent sign-ins, and audit the acting admin account. Note: old/new setting values are not ingested by this connector - check the Claude Console audit view for details.",
+                "displayName": "Anthropic Claude - SSO or authentication controls modified",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('org_sso_toggled', 'org_sso_connection_deactivated', 'org_sso_connection_deleted', 'org_sso_provisioning_mode_changed', 'org_sso_group_role_mappings_updated', 'org_magic_link_second_factor_toggled')\n| summarize arg_max(TimeGenerated, *) by Id\n| project TimeGenerated, ActivityType, ActorType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "High",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "DefenseEvasion",
+                  "Persistence",
+                  "CredentialAccess"
+                ],
+                "techniques": [
+                  "T1556",
+                  "T1562"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "ActorType": "ActorType",
+                  "ActorUserId": "ActorUserId",
+                  "ActorUserAgent": "ActorUserAgent"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  },
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId1'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId1')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion1')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId1'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId1'),'-', variables('analyticRuleVersion1'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion1')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName2'), variables('analyticRuleVersion2'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId2')]",
+        "displayName": "Anthropic Claude - Organization IP restrictions removed or modified",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion2')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId2')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects deletion or modification of Claude organization IP restrictions. Removing IP allowlist entries lets sessions originate from unapproved networks and commonly precedes off-network data access. Creation events are excluded as hardening. Confirm with the acting admin; restore the restriction if unauthorized.",
+                "displayName": "Anthropic Claude - Organization IP restrictions removed or modified",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('org_ip_restriction_deleted', 'org_ip_restriction_updated')\n| summarize arg_max(TimeGenerated, *) by Id\n| project TimeGenerated, ActivityType, ActorType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "High",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "DefenseEvasion"
+                ],
+                "techniques": [
+                  "T1562"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "ActorType": "ActorType",
+                  "ActorUserId": "ActorUserId",
+                  "ActorUserAgent": "ActorUserAgent"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  },
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId2'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId2')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion2')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId2'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId2'),'-', variables('analyticRuleVersion2'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion2')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName3'), variables('analyticRuleVersion3'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId3')]",
+        "displayName": "Anthropic Claude - New API or admin credential created",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion3')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId3')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects creation of new Claude credentials: admin API keys (High severity), service keys, request-signing keys, and standard/platform API keys (Medium). New credentials are durable persistence - an attacker holding an admin key retains access independent of the compromised session. Validate the key was requested through change control; revoke unrecognized keys in the Claude Console and review activity by the creating account. Tuning: exclude api_key_created / platform_api_key_created if routine developer key creation is too noisy.",
+                "displayName": "Anthropic Claude - New API or admin credential created",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('admin_api_key_created', 'service_key_created', 'platform_signing_key_created', 'platform_api_key_created', 'api_key_created')\n| summarize arg_max(TimeGenerated, *) by Id\n| extend Severity = case(ActivityType =~ 'admin_api_key_created', 'High', 'Medium')\n| project TimeGenerated, ActivityType, Severity, ActorType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "Persistence"
+                ],
+                "techniques": [
+                  "T1098"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "ActorType": "ActorType",
+                  "ActorUserId": "ActorUserId"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  },
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ],
+                "alertDetailsOverride": {
+                  "alertDisplayNameFormat": "Claude credential created: {{ActivityType}} by {{ActorEmailAddress}}",
+                  "alertSeverityColumnName": "Severity"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId3'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId3')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion3')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId3'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId3'),'-', variables('analyticRuleVersion3'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion3')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName4'), variables('analyticRuleVersion4'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId4')]",
+        "displayName": "Anthropic Claude - Privileged role change or primary owner transfer",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion4')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId4')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects privileged role changes in the Claude organization: primary owner transfer (High severity), user role updates, RBAC role assignments, permissions added to RBAC roles, and role assignment grants. Unexpected privilege changes are a primary escalation and persistence vector. The changed role's old/new values are not ingested - confirm details in the Claude Console audit view and verify against approved admin changes.",
+                "displayName": "Anthropic Claude - Privileged role change or primary owner transfer",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('primary_owner_transferred', 'claude_user_role_updated', 'rbac_role_assigned', 'rbac_role_permission_added', 'role_assignment_granted')\n| summarize arg_max(TimeGenerated, *) by Id\n| extend Severity = case(ActivityType =~ 'primary_owner_transferred', 'High', 'Medium')\n| project TimeGenerated, ActivityType, Severity, ActorType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "PrivilegeEscalation",
+                  "Persistence"
+                ],
+                "techniques": [
+                  "T1098"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "ActorType": "ActorType",
+                  "ActorUserId": "ActorUserId"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  },
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ],
+                "alertDetailsOverride": {
+                  "alertDisplayNameFormat": "Claude role change: {{ActivityType}} by {{ActorEmailAddress}}",
+                  "alertSeverityColumnName": "Severity"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId4'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId4')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion4')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId4'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId4'),'-', variables('analyticRuleVersion4'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion4')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName5'), variables('analyticRuleVersion5'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId5')]",
+        "displayName": "Anthropic Claude - Authentication failure spike from a single IP",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion5')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId5')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects a spike of failed Claude sign-ins from a single IP address: 10 or more failures, or failures across 5 or more distinct target accounts, within one hour - indicative of brute force or password spraying against SSO or magic-link authentication. Investigate the source IP, check for a subsequent successful sign-in from it, and consider blocking at the network edge. Thresholds are tuning knobs; raise them if shared egress IPs (VPN/proxy) cause noise.",
+                "displayName": "Anthropic Claude - Authentication failure spike from a single IP",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('sso_login_failed', 'magic_link_login_failed')\n| summarize arg_max(TimeGenerated, *) by Id\n| extend TargetAccount = iff(isnotempty(ActorEmailAddress), ActorEmailAddress, ActorUnauthenticatedEmailAddress)\n| where isnotempty(ActorIpAddress)\n| summarize FailedAttempts = count(), DistinctAccounts = dcount(TargetAccount), TargetAccounts = make_set(TargetAccount, 20), FirstFailure = min(TimeGenerated), LastFailure = max(TimeGenerated) by ActorIpAddress\n| where FailedAttempts >= 10 or DistinctAccounts >= 5\n| extend TimeGenerated = LastFailure",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "CredentialAccess"
+                ],
+                "techniques": [
+                  "T1110"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "FailedAttempts": "FailedAttempts",
+                  "DistinctAccounts": "DistinctAccounts",
+                  "TargetAccounts": "TargetAccounts"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId5'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId5')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion5')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId5'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId5'),'-', variables('analyticRuleVersion5'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion5')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName6'), variables('analyticRuleVersion6'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId6')]",
+        "displayName": "Anthropic Claude - Organization data or audit log export",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion6')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId6')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects Claude organization-wide data exports, audit log exports, and member-list exports, including when export files are accessed/downloaded. Exports bundle large volumes of organizational content and are a direct exfiltration channel if run by an unauthorized actor. Compliance and legal teams legitimately run these - tune by excluding approved actor accounts if exports are routine in your organization.",
+                "displayName": "Anthropic Claude - Organization data or audit log export",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('org_data_export_started', 'org_data_export_completed', 'org_data_export_accessed', 'audit_log_export_started', 'audit_log_export_accessed', 'org_members_exported')\n| summarize arg_max(TimeGenerated, *) by Id\n| project TimeGenerated, ActivityType, ActorType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "Exfiltration",
+                  "Collection"
+                ],
+                "techniques": [
+                  "T1567"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "ActorType": "ActorType",
+                  "ActorUserId": "ActorUserId",
+                  "ActorUserAgent": "ActorUserAgent"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  },
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId6'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId6')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion6')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId6'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId6'),'-', variables('analyticRuleVersion6'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion6')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName7'), variables('analyticRuleVersion7'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId7')]",
+        "displayName": "Anthropic Claude - Mass content deletion by a single actor",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion7')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId7')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects a single actor deleting 20 or more Claude objects (chats, files, project documents/files, projects) within an hour. Mass deletion indicates anti-forensic cleanup after data theft, a compromised account, or a disgruntled insider. Review what was deleted via the Compliance API (soft-deleted content remains retrievable per retention policy) and check the actor's preceding activity for exports or external sharing. The 20-per-hour threshold is a tuning knob.",
+                "displayName": "Anthropic Claude - Mass content deletion by a single actor",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('claude_chat_deleted', 'claude_file_deleted', 'claude_project_document_deleted', 'claude_project_file_deleted', 'claude_project_deleted')\n| summarize arg_max(TimeGenerated, *) by Id\n| summarize DeletionCount = count(), DeletedTypes = make_set(ActivityType, 10), SourceIps = make_set(ActorIpAddress, 10), FirstEvent = min(TimeGenerated), LastEvent = max(TimeGenerated) by ActorUserId, ActorEmailAddress\n| where DeletionCount >= 20\n| extend TimeGenerated = LastEvent",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "Impact",
+                  "DefenseEvasion"
+                ],
+                "techniques": [
+                  "T1485",
+                  "T1070"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "DeletionCount": "DeletionCount",
+                  "DeletedTypes": "DeletedTypes",
+                  "SourceIps": "SourceIps"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId7'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId7')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion7')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId7'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId7'),'-', variables('analyticRuleVersion7'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion7')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName8'), variables('analyticRuleVersion8'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId8')]",
+        "displayName": "Anthropic Claude - Repeated access-denied events (content probing)",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion8')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId8')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects a signed-in actor repeatedly denied access to Claude content (10 or more chat / file / project document / artifact access failures in an hour) - enumeration of content the account is not authorized to view. This can indicate a compromised account exploring the tenant or an insider testing boundaries. Review what the actor attempted to reach and whether their role recently changed. The threshold is a tuning knob.",
+                "displayName": "Anthropic Claude - Repeated access-denied events (content probing)",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('claude_chat_access_failed', 'claude_file_access_failed', 'claude_project_document_access_failed', 'claude_project_file_access_failed', 'claude_artifact_access_failed')\n| summarize arg_max(TimeGenerated, *) by Id\n| summarize DeniedCount = count(), DeniedTypes = make_set(ActivityType, 10), SourceIps = make_set(ActorIpAddress, 10), FirstEvent = min(TimeGenerated), LastEvent = max(TimeGenerated) by ActorUserId, ActorEmailAddress\n| where DeniedCount >= 10\n| extend TimeGenerated = LastEvent",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "Discovery",
+                  "Collection"
+                ],
+                "techniques": [
+                  "T1213"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "DeniedCount": "DeniedCount",
+                  "DeniedTypes": "DeniedTypes",
+                  "SourceIps": "SourceIps"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId8'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId8')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion8')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId8'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId8'),'-', variables('analyticRuleVersion8'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion8')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName9'), variables('analyticRuleVersion9'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId9')]",
+        "displayName": "Anthropic Claude - MCP server, connector, or extension configuration change",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion9')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId9')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects configuration changes to Claude's external integration surface: MCP servers created/updated/deleted, MCP tool policy changes, desktop extensions uploaded or allowlisted, and MCP tunnel creation, certificate additions, or connector-secret reveals. New or modified integrations are both a data egress path and a persistence foothold. Verify each change against an approved integration request; tunnel_token_revealed means a connector secret was displayed - confirm who viewed it and rotate if unexpected.",
+                "displayName": "Anthropic Claude - MCP server, connector, or extension configuration change",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('mcp_server_created', 'mcp_server_updated', 'mcp_server_deleted', 'mcp_tool_policy_updated', 'desktop_extension_uploaded', 'desktop_extension_allowlisted', 'tunnel_created', 'tunnel_certificate_added', 'tunnel_token_revealed')\n| summarize arg_max(TimeGenerated, *) by Id\n| project TimeGenerated, ActivityType, ActorType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "Persistence"
+                ],
+                "techniques": [
+                  "T1176"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "ActorType": "ActorType",
+                  "ActorUserId": "ActorUserId",
+                  "ActorUserAgent": "ActorUserAgent"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  },
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId9'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId9')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion9')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId9'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId9'),'-', variables('analyticRuleVersion9'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion9')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName10'), variables('analyticRuleVersion10'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId10')]",
+        "displayName": "Anthropic Claude - Security guardrail relaxed",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion10')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId10')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects relaxation of Claude security guardrails: Claude Code data sharing enabled, zero-data-retention disabled, Cowork act-without-asking / auto / always-allow-connector modes enabled, plugin CLI execution policy changes, connector domain guard changes, and Compliance API settings updates. Each of these weakens review, retention, or restriction controls; an unexpected change suggests an attacker or insider reducing oversight before acting. Confirm the change ticket; revert if unauthorized.",
+                "displayName": "Anthropic Claude - Security guardrail relaxed",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('org_claude_code_data_sharing_enabled', 'org_claude_code_zero_data_retention_disabled', 'org_cowork_act_without_asking_mode_enabled', 'org_cowork_auto_mode_enabled', 'org_cowork_mcp_always_allow_enabled', 'cli_plugin_exec_policy_updated', 'org_connector_domain_guard_updated', 'org_compliance_api_settings_updated')\n| summarize arg_max(TimeGenerated, *) by Id\n| project TimeGenerated, ActivityType, ActorType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "High",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "DefenseEvasion"
+                ],
+                "techniques": [
+                  "T1562"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "ActorType": "ActorType",
+                  "ActorUserId": "ActorUserId",
+                  "ActorUserAgent": "ActorUserAgent"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  },
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId10'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId10')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion10')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId10'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId10'),'-', variables('analyticRuleVersion10'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion10')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName11'), variables('analyticRuleVersion11'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId11')]",
+        "displayName": "Anthropic Claude - Content shared publicly or exported externally",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion11')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId11')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects Claude content being exposed outside the organization: artifacts published publicly, artifact/project sharing settings changed, chat snapshots created (shareable links), and files exported to external storage. Publicly exposed content is an exfiltration path that requires no credentials to consume. In collaboration-heavy organizations this rule can be noisy - consider scoping to sensitive projects or running it as a hunt instead. Review the shared object and unshare/unpublish if not approved.",
+                "displayName": "Anthropic Claude - Content shared publicly or exported externally",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActivityType in~ ('claude_artifact_published', 'claude_artifact_sharing_updated', 'claude_chat_snapshot_created', 'claude_project_sharing_updated', 'claude_file_exported')\n| summarize arg_max(TimeGenerated, *) by Id\n| project TimeGenerated, ActivityType, ActorType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "Exfiltration"
+                ],
+                "techniques": [
+                  "T1567"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "ActorType": "ActorType",
+                  "ActorUserId": "ActorUserId",
+                  "ActorUserAgent": "ActorUserAgent"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  },
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId11'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId11')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion11')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId11'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId11'),'-', variables('analyticRuleVersion11'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion11')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName12'), variables('analyticRuleVersion12'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId12')]",
+        "displayName": "Anthropic Claude - Compliance API accessed by new key or IP",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion12')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId12')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects Claude Compliance API access from a (key, IP) pair not seen in the prior 14 days. The Compliance API can read all organizational content, so a new consumer - a new key, or a known key from a new network - merits verification. Expect a burst of alerts when first enabled while the baseline populates (self-quiets within 14 days). Verify the key owner and source network; unexpected access warrants immediate key rotation.",
+                "displayName": "Anthropic Claude - Compliance API accessed by new key or IP",
+                "enabled": false,
+                "query": "let lookback = 14d;\nlet recent = 1h;\nlet known = ClaudeActivity\n    | where TimeGenerated between (ago(lookback) .. ago(recent))\n    | where ActivityType =~ 'compliance_api_accessed'\n    | summarize by ActorApiKeyId, ActorIpAddress;\nClaudeActivity\n| where TimeGenerated > ago(recent)\n| where ActivityType =~ 'compliance_api_accessed'\n| summarize arg_max(TimeGenerated, *) by Id\n| join kind=leftanti known on ActorApiKeyId, ActorIpAddress\n| project TimeGenerated, ActivityType, ActorType, ActorApiKeyId, ActorIpAddress, ActorUserAgent, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "P14D",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "Collection"
+                ],
+                "techniques": [
+                  "T1213"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActorApiKeyId": "ActorApiKeyId",
+                  "ActorUserAgent": "ActorUserAgent"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId12'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId12')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion12')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId12'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId12'),'-', variables('analyticRuleVersion12'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion12')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName13'), variables('analyticRuleVersion13'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId13')]",
+        "displayName": "Anthropic Claude - Invite link generated or mass member invites",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion13')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId13')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Detects Claude organization invite links being generated or regenerated (links bypass targeted per-email invitations) and bursts of 10 or more member invites sent by one actor within an hour. Both patterns can seed unauthorized accounts for persistence. Invitee addresses are not ingested - review the invite list in the Claude Console. Verify with the acting admin; disable the invite link if not sanctioned.",
+                "displayName": "Anthropic Claude - Invite link generated or mass member invites",
+                "enabled": false,
+                "query": "let linkEvents = ClaudeActivity\n    | where ActivityType in~ ('org_invite_link_generated', 'org_invite_link_regenerated')\n    | summarize arg_max(TimeGenerated, *) by Id\n    | project TimeGenerated, ActivityType, ActorEmailAddress, ActorUserId, ActorIpAddress, EventCount = 1;\nlet inviteBurst = ClaudeActivity\n    | where ActivityType =~ 'org_user_invite_sent'\n    | summarize arg_max(TimeGenerated, *) by Id\n    | summarize EventCount = count(), TimeGenerated = max(TimeGenerated), ActorIpAddress = take_any(ActorIpAddress) by ActorEmailAddress, ActorUserId\n    | where EventCount >= 10\n    | extend ActivityType = 'org_user_invite_sent';\nunion linkEvents, inviteBurst",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [
+                  "InitialAccess",
+                  "Persistence"
+                ],
+                "techniques": [
+                  "T1136"
+                ],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "EventCount": "EventCount"
+                },
+                "entityMappings": [
+                  {
+                    "entityType": "Account",
+                    "fieldMappings": [
+                      {
+                        "identifier": "FullName",
+                        "columnName": "ActorEmailAddress"
+                      }
+                    ]
+                  },
+                  {
+                    "entityType": "IP",
+                    "fieldMappings": [
+                      {
+                        "identifier": "Address",
+                        "columnName": "ActorIpAddress"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId13'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId13')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion13')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId13'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId13'),'-', variables('analyticRuleVersion13'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion13')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('analyticRuleTemplateSpecName14'), variables('analyticRuleVersion14'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_analyticRuleContentId14')]",
+        "displayName": "Anthropic Claude - Anthropic operator access (access transparency)",
+        "contentKind": "AnalyticsRule",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('analyticRuleVersion14')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.SecurityInsights/AlertRuleTemplates",
+              "name": "[variables('_analyticRuleContentId14')]",
+              "apiVersion": "2023-02-01-preview",
+              "kind": "Scheduled",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Surfaces actions performed on your Claude organization by Anthropic (vendor operator access, for example via internal support tooling). Informational: this is access transparency, not attack detection. Correlate with any open Anthropic support engagement; raise with your Anthropic account team if no engagement explains the access.",
+                "displayName": "Anthropic Claude - Anthropic operator access (access transparency)",
+                "enabled": false,
+                "query": "ClaudeActivity\n| where ActorType =~ 'anthropic_actor'\n| summarize arg_max(TimeGenerated, *) by Id\n| project TimeGenerated, ActivityType, ActorType, OrganizationId, Id",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "severity": "Informational",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "status": "Available",
+                "requiredDataConnectors": [
+                  {
+                    "connectorId": "Anthropic-Claude-Activities-wizard-made-CCF",
+                    "dataTypes": [
+                      "ClaudeActivity_CL"
+                    ]
+                  }
+                ],
+                "tactics": [],
+                "techniques": [],
+                "eventGroupingSettings": {
+                  "aggregationKind": "AlertPerResult"
+                },
+                "customDetails": {
+                  "ActivityType": "ActivityType",
+                  "ActorType": "ActorType"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','AnalyticsRule-', variables('_analyticRuleContentId14'))]",
+              "properties": {
+                "contentId": "[variables('_analyticRuleContentId14')]",
+                "kind": "AnalyticsRule",
+                "version": "[variables('analyticRuleVersion14')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/AlertRuleTemplates', variables('_analyticRuleContentId14'))]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','ar','-', uniqueString(concat(variables('_solutionId'),'-','AnalyticsRule','-',variables('_analyticRuleContentId14'),'-', variables('analyticRuleVersion14'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('analyticRuleVersion14')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('huntingQueryTemplateSpecName1'), variables('huntingQueryVersion1'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_huntingQueryContentId1')]",
+        "displayName": "Anthropic Claude - Off-hours privileged administrative activity",
+        "contentKind": "HuntingQuery",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('huntingQueryVersion1')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/savedSearches",
+              "apiVersion": "2022-10-01",
+              "name": "AnthropicClaudeActivities_Hunting_Query_1",
+              "location": "[parameters('location')]",
+              "properties": {
+                "eTag": "*",
+                "displayName": "Anthropic Claude - Off-hours privileged administrative activity",
+                "category": "Hunting Queries",
+                "query": "let AdminActivityTypes = dynamic(['org_sso_toggled', 'org_sso_connection_deactivated', 'org_sso_connection_deleted', 'org_sso_provisioning_mode_changed', 'org_sso_group_role_mappings_updated', 'org_magic_link_second_factor_toggled', 'org_ip_restriction_created', 'org_ip_restriction_updated', 'org_ip_restriction_deleted', 'admin_api_key_created', 'admin_api_key_updated', 'admin_api_key_deleted', 'service_key_created', 'service_key_revoked', 'primary_owner_transferred', 'claude_user_role_updated', 'rbac_role_assigned', 'rbac_role_created', 'rbac_role_deleted', 'rbac_role_permission_added', 'rbac_role_permission_removed', 'role_assignment_granted', 'role_assignment_revoked', 'mcp_server_created', 'mcp_server_updated', 'mcp_server_deleted', 'mcp_tool_policy_updated', 'org_data_export_started', 'audit_log_export_started', 'org_compliance_api_settings_updated', 'claude_organization_settings_updated']);\nClaudeActivity\n| where TimeGenerated > ago(7d)\n| where ActivityType in~ (AdminActivityTypes)\n| summarize arg_max(TimeGenerated, *) by Id\n| extend HourUtc = hourofday(TimeGenerated)\n| where HourUtc < 6 or HourUtc >= 18\n| project TimeGenerated, HourUtc, ActivityType, ActorType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent\n| sort by TimeGenerated desc",
+                "version": 2,
+                "tags": [
+                  {
+                    "name": "description",
+                    "value": "Privileged Claude administrative actions (SSO / IP-restriction / credential / role / MCP / export / settings changes) occurring outside 06:00-18:00 UTC in the last 7 days. Adjust the hour window and enumerated types to your business hours and change windows. Off-hours admin activity is a classic indicator of account compromise or policy-evading insiders."
+                  },
+                  {
+                    "name": "tactics",
+                    "value": "Persistence,PrivilegeEscalation"
+                  },
+                  {
+                    "name": "techniques",
+                    "value": "T1098"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','HuntingQuery-', variables('_huntingQueryContentId1'))]",
+              "properties": {
+                "contentId": "[variables('_huntingQueryContentId1')]",
+                "kind": "HuntingQuery",
+                "version": "[variables('huntingQueryVersion1')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[resourceId('Microsoft.OperationalInsights/savedSearches', 'AnthropicClaudeActivities_Hunting_Query_1')]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','hq','-', uniqueString(concat(variables('_solutionId'),'-','HuntingQuery','-',variables('_huntingQueryContentId1'),'-', variables('huntingQueryVersion1'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('huntingQueryVersion1')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('huntingQueryTemplateSpecName2'), variables('huntingQueryVersion2'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_huntingQueryContentId2')]",
+        "displayName": "Anthropic Claude - Privileged action from first-time-seen IP",
+        "contentKind": "HuntingQuery",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('huntingQueryVersion2')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/savedSearches",
+              "apiVersion": "2022-10-01",
+              "name": "AnthropicClaudeActivities_Hunting_Query_2",
+              "location": "[parameters('location')]",
+              "properties": {
+                "eTag": "*",
+                "displayName": "Anthropic Claude - Privileged action from first-time-seen IP",
+                "category": "Hunting Queries",
+                "query": "let AdminActivityTypes = dynamic(['org_sso_toggled', 'org_sso_connection_deactivated', 'org_sso_connection_deleted', 'org_sso_provisioning_mode_changed', 'org_sso_group_role_mappings_updated', 'org_magic_link_second_factor_toggled', 'org_ip_restriction_created', 'org_ip_restriction_updated', 'org_ip_restriction_deleted', 'admin_api_key_created', 'admin_api_key_updated', 'admin_api_key_deleted', 'service_key_created', 'service_key_revoked', 'primary_owner_transferred', 'claude_user_role_updated', 'rbac_role_assigned', 'rbac_role_created', 'rbac_role_deleted', 'rbac_role_permission_added', 'rbac_role_permission_removed', 'role_assignment_granted', 'role_assignment_revoked', 'mcp_server_created', 'mcp_server_updated', 'mcp_server_deleted', 'mcp_tool_policy_updated', 'org_data_export_started', 'audit_log_export_started', 'org_compliance_api_settings_updated', 'claude_organization_settings_updated']);\nlet baseline = ClaudeActivity\n    | where TimeGenerated between (ago(30d) .. ago(7d))\n    | where isnotempty(ActorIpAddress)\n    | summarize by ActorUserId, ActorIpAddress;\nClaudeActivity\n| where TimeGenerated > ago(7d)\n| where ActivityType in~ (AdminActivityTypes)\n| where isnotempty(ActorIpAddress)\n| summarize arg_max(TimeGenerated, *) by Id\n| join kind=leftanti baseline on ActorUserId, ActorIpAddress\n| project TimeGenerated, ActivityType, ActorEmailAddress, ActorUserId, ActorIpAddress, ActorUserAgent\n| sort by TimeGenerated desc",
+                "version": 2,
+                "tags": [
+                  {
+                    "name": "description",
+                    "value": "Privileged Claude administrative actions performed by a user from an IP address not seen for that user in the prior 30 days. New-network admin activity warrants a quick provenance check (travel? VPN change? new device?). The 30-day baseline and 7-day detection windows are adjustable."
+                  },
+                  {
+                    "name": "tactics",
+                    "value": "InitialAccess"
+                  },
+                  {
+                    "name": "techniques",
+                    "value": "T1078"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','HuntingQuery-', variables('_huntingQueryContentId2'))]",
+              "properties": {
+                "contentId": "[variables('_huntingQueryContentId2')]",
+                "kind": "HuntingQuery",
+                "version": "[variables('huntingQueryVersion2')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[resourceId('Microsoft.OperationalInsights/savedSearches', 'AnthropicClaudeActivities_Hunting_Query_2')]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','hq','-', uniqueString(concat(variables('_solutionId'),'-','HuntingQuery','-',variables('_huntingQueryContentId2'),'-', variables('huntingQueryVersion2'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('huntingQueryVersion2')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('huntingQueryTemplateSpecName3'), variables('huntingQueryVersion3'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_huntingQueryContentId3')]",
+        "displayName": "Anthropic Claude - Dormant account resumed activity",
+        "contentKind": "HuntingQuery",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('huntingQueryVersion3')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/savedSearches",
+              "apiVersion": "2022-10-01",
+              "name": "AnthropicClaudeActivities_Hunting_Query_3",
+              "location": "[parameters('location')]",
+              "properties": {
+                "eTag": "*",
+                "displayName": "Anthropic Claude - Dormant account resumed activity",
+                "category": "Hunting Queries",
+                "query": "let lastSeen = ClaudeActivity\n    | where TimeGenerated between (ago(90d) .. ago(7d))\n    | where isnotempty(ActorUserId)\n    | summarize PriorLastActivity = max(TimeGenerated) by ActorUserId;\nClaudeActivity\n| where TimeGenerated > ago(7d)\n| where isnotempty(ActorUserId)\n| summarize arg_max(TimeGenerated, *) by Id\n| summarize ResumedAt = min(TimeGenerated), RecentEvents = count(), RecentTypes = make_set(ActivityType, 20), ActorEmailAddress = take_any(ActorEmailAddress) by ActorUserId\n| join kind=leftouter lastSeen on ActorUserId\n| where isnull(PriorLastActivity) or PriorLastActivity < ago(37d)\n| extend DaysDormant = iff(isnull(PriorLastActivity), long(null), datetime_diff('day', ResumedAt, PriorLastActivity))\n| project ActorUserId, ActorEmailAddress, PriorLastActivity, DaysDormant, ResumedAt, RecentEvents, RecentTypes\n| sort by ResumedAt desc",
+                "version": 2,
+                "tags": [
+                  {
+                    "name": "description",
+                    "value": "Claude accounts silent for 30+ days that resumed activity in the last 7 days, with their recent event types. Dormant-then-active accounts are worth a look: offboarding gaps, credential reuse, or a quiet compromise. Rows with an empty PriorLastActivity were never seen in the 90-day lookback (new or very stale accounts)."
+                  },
+                  {
+                    "name": "tactics",
+                    "value": "InitialAccess"
+                  },
+                  {
+                    "name": "techniques",
+                    "value": "T1078"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','HuntingQuery-', variables('_huntingQueryContentId3'))]",
+              "properties": {
+                "contentId": "[variables('_huntingQueryContentId3')]",
+                "kind": "HuntingQuery",
+                "version": "[variables('huntingQueryVersion3')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[resourceId('Microsoft.OperationalInsights/savedSearches', 'AnthropicClaudeActivities_Hunting_Query_3')]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','hq','-', uniqueString(concat(variables('_solutionId'),'-','HuntingQuery','-',variables('_huntingQueryContentId3'),'-', variables('huntingQueryVersion3'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('huntingQueryVersion3')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('huntingQueryTemplateSpecName4'), variables('huntingQueryVersion4'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_huntingQueryContentId4')]",
+        "displayName": "Anthropic Claude - SCIM deprovisioning or directory sync anomalies",
+        "contentKind": "HuntingQuery",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('huntingQueryVersion4')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/savedSearches",
+              "apiVersion": "2022-10-01",
+              "name": "AnthropicClaudeActivities_Hunting_Query_4",
+              "location": "[parameters('location')]",
+              "properties": {
+                "eTag": "*",
+                "displayName": "Anthropic Claude - SCIM deprovisioning or directory sync anomalies",
+                "category": "Hunting Queries",
+                "query": "ClaudeActivity\n| where TimeGenerated > ago(14d)\n| where ActivityType in~ ('scim_user_created', 'scim_user_updated', 'scim_user_deleted', 'org_directory_resync_failed', 'org_directory_sync_deleted')\n| summarize arg_max(TimeGenerated, *) by Id\n| summarize EventCount = count(), Types = make_set(ActivityType, 10) by Hour = bin(TimeGenerated, 1h)\n| where EventCount >= 10 or set_has_element(Types, 'org_directory_resync_failed') or set_has_element(Types, 'org_directory_sync_deleted')\n| sort by Hour desc",
+                "version": 2,
+                "tags": [
+                  {
+                    "name": "description",
+                    "value": "Hourly spikes (10+) of SCIM user lifecycle events, plus any directory resync failures or directory sync deletions, over 14 days. Deprovisioning bursts can be legitimate offboarding sweeps or an IdP misconfiguration mass-disabling access; sync deletions/failures can silently halt deprovisioning. Both need human judgment."
+                  },
+                  {
+                    "name": "tactics",
+                    "value": "Impact"
+                  },
+                  {
+                    "name": "techniques",
+                    "value": "T1531"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','HuntingQuery-', variables('_huntingQueryContentId4'))]",
+              "properties": {
+                "contentId": "[variables('_huntingQueryContentId4')]",
+                "kind": "HuntingQuery",
+                "version": "[variables('huntingQueryVersion4')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[resourceId('Microsoft.OperationalInsights/savedSearches', 'AnthropicClaudeActivities_Hunting_Query_4')]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','hq','-', uniqueString(concat(variables('_solutionId'),'-','HuntingQuery','-',variables('_huntingQueryContentId4'),'-', variables('huntingQueryVersion4'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('huntingQueryVersion4')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('huntingQueryTemplateSpecName5'), variables('huntingQueryVersion5'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_huntingQueryContentId5')]",
+        "displayName": "Anthropic Claude - Anomalous per-user activity volume",
+        "contentKind": "HuntingQuery",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('huntingQueryVersion5')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/savedSearches",
+              "apiVersion": "2022-10-01",
+              "name": "AnthropicClaudeActivities_Hunting_Query_5",
+              "location": "[parameters('location')]",
+              "properties": {
+                "eTag": "*",
+                "displayName": "Anthropic Claude - Anomalous per-user activity volume",
+                "category": "Hunting Queries",
+                "query": "let baseline = ClaudeActivity\n    | where TimeGenerated between (ago(21d) .. ago(7d))\n    | where isnotempty(ActorUserId)\n    | summarize DailyCount = count() by ActorUserId, Day = bin(TimeGenerated, 1d)\n    | summarize AvgDaily = avg(DailyCount), StdDaily = stdev(DailyCount) by ActorUserId;\nClaudeActivity\n| where TimeGenerated > ago(7d)\n| where isnotempty(ActorUserId)\n| summarize arg_max(TimeGenerated, *) by Id\n| summarize RecentDaily = count(), ActorEmailAddress = take_any(ActorEmailAddress) by ActorUserId, Day = bin(TimeGenerated, 1d)\n| join kind=inner baseline on ActorUserId\n| where isnotnull(StdDaily) and RecentDaily > AvgDaily + 3 * StdDaily and RecentDaily >= 50\n| project Day, ActorUserId, ActorEmailAddress, RecentDaily, AvgDaily = round(AvgDaily, 1), StdDaily = round(StdDaily, 1)\n| sort by RecentDaily desc",
+                "version": 2,
+                "tags": [
+                  {
+                    "name": "description",
+                    "value": "Users whose daily Claude event volume in the last 7 days exceeds their own 14-day average by 3 standard deviations (minimum 50 events/day). Sudden volume changes suggest automation on a user account, scripted scraping, or account sharing. The 50-event floor suppresses small-baseline noise."
+                  },
+                  {
+                    "name": "tactics",
+                    "value": "Collection"
+                  },
+                  {
+                    "name": "techniques",
+                    "value": "T1213"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','HuntingQuery-', variables('_huntingQueryContentId5'))]",
+              "properties": {
+                "contentId": "[variables('_huntingQueryContentId5')]",
+                "kind": "HuntingQuery",
+                "version": "[variables('huntingQueryVersion5')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[resourceId('Microsoft.OperationalInsights/savedSearches', 'AnthropicClaudeActivities_Hunting_Query_5')]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','hq','-', uniqueString(concat(variables('_solutionId'),'-','HuntingQuery','-',variables('_huntingQueryContentId5'),'-', variables('huntingQueryVersion5'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('huntingQueryVersion5')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('huntingQueryTemplateSpecName6'), variables('huntingQueryVersion6'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_huntingQueryContentId6')]",
+        "displayName": "Anthropic Claude - Compliance API consumer review",
+        "contentKind": "HuntingQuery",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('huntingQueryVersion6')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/savedSearches",
+              "apiVersion": "2022-10-01",
+              "name": "AnthropicClaudeActivities_Hunting_Query_6",
+              "location": "[parameters('location')]",
+              "properties": {
+                "eTag": "*",
+                "displayName": "Anthropic Claude - Compliance API consumer review",
+                "category": "Hunting Queries",
+                "query": "ClaudeActivity\n| where TimeGenerated > ago(30d)\n| where ActivityType =~ 'compliance_api_accessed'\n| summarize arg_max(TimeGenerated, *) by Id\n| summarize Requests = count(), FirstSeen = min(TimeGenerated), LastSeen = max(TimeGenerated), DaysActive = dcount(bin(TimeGenerated, 1d)), UserAgents = make_set(ActorUserAgent, 5) by ActorApiKeyId, ActorIpAddress\n| sort by Requests desc",
+                "version": 2,
+                "tags": [
+                  {
+                    "name": "description",
+                    "value": "Inventory of Claude Compliance API consumers over 30 days: request counts, first/last seen, active days, and user agents per (key, IP) pair. Review periodically - the Compliance API reads all organizational content, so its consumer list should be short, known, and stable. Complements the 'Compliance API accessed by new key or IP' analytic rule."
+                  },
+                  {
+                    "name": "tactics",
+                    "value": "Collection"
+                  },
+                  {
+                    "name": "techniques",
+                    "value": "T1213"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "apiVersion": "2022-01-01-preview",
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/','HuntingQuery-', variables('_huntingQueryContentId6'))]",
+              "properties": {
+                "contentId": "[variables('_huntingQueryContentId6')]",
+                "kind": "HuntingQuery",
+                "version": "[variables('huntingQueryVersion6')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                  "name": "[variables('_solutionAuthor')]",
+                  "tier": "[variables('_solutionTier')]"
+                },
+                "parentId": "[resourceId('Microsoft.OperationalInsights/savedSearches', 'AnthropicClaudeActivities_Hunting_Query_6')]"
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','hq','-', uniqueString(concat(variables('_solutionId'),'-','HuntingQuery','-',variables('_huntingQueryContentId6'),'-', variables('huntingQueryVersion6'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('huntingQueryVersion6')]"
+      }
+    },
+    {
       "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
       "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
       "location": "[parameters('location')]",
@@ -814,6 +2954,106 @@
               "kind": "Parser",
               "contentId": "[variables('_parserContentId1')]",
               "version": "[variables('parserVersion1')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId1')]",
+              "version": "[variables('analyticRuleVersion1')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId2')]",
+              "version": "[variables('analyticRuleVersion2')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId3')]",
+              "version": "[variables('analyticRuleVersion3')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId4')]",
+              "version": "[variables('analyticRuleVersion4')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId5')]",
+              "version": "[variables('analyticRuleVersion5')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId6')]",
+              "version": "[variables('analyticRuleVersion6')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId7')]",
+              "version": "[variables('analyticRuleVersion7')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId8')]",
+              "version": "[variables('analyticRuleVersion8')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId9')]",
+              "version": "[variables('analyticRuleVersion9')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId10')]",
+              "version": "[variables('analyticRuleVersion10')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId11')]",
+              "version": "[variables('analyticRuleVersion11')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId12')]",
+              "version": "[variables('analyticRuleVersion12')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId13')]",
+              "version": "[variables('analyticRuleVersion13')]"
+            },
+            {
+              "kind": "AnalyticsRule",
+              "contentId": "[variables('_analyticRuleContentId14')]",
+              "version": "[variables('analyticRuleVersion14')]"
+            },
+            {
+              "kind": "HuntingQuery",
+              "contentId": "[variables('_huntingQueryContentId1')]",
+              "version": "[variables('huntingQueryVersion1')]"
+            },
+            {
+              "kind": "HuntingQuery",
+              "contentId": "[variables('_huntingQueryContentId2')]",
+              "version": "[variables('huntingQueryVersion2')]"
+            },
+            {
+              "kind": "HuntingQuery",
+              "contentId": "[variables('_huntingQueryContentId3')]",
+              "version": "[variables('huntingQueryVersion3')]"
+            },
+            {
+              "kind": "HuntingQuery",
+              "contentId": "[variables('_huntingQueryContentId4')]",
+              "version": "[variables('huntingQueryVersion4')]"
+            },
+            {
+              "kind": "HuntingQuery",
+              "contentId": "[variables('_huntingQueryContentId5')]",
+              "version": "[variables('huntingQueryVersion5')]"
+            },
+            {
+              "kind": "HuntingQuery",
+              "contentId": "[variables('_huntingQueryContentId6')]",
+              "version": "[variables('huntingQueryVersion6')]"
             }
           ]
         },
@@ -826,7 +3066,7 @@
         "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
         "displayName": "[variables('_solutionName')]",
         "publisherDisplayName": "[variables('_solutionAuthor')]",
-        "descriptionHtml": "<p>Ingests Anthropic Claude Activity logs into Microsoft Sentinel via the Claude Compliance API, using the Codeless Connector Framework (CCF). The Activity Feed records authentication, chat, file, project, administrative, and platform actions occurring in your organization. Requires Claude Enterprise with the Compliance API enabled and a Compliance API key carrying the <code>read:compliance_activities</code> scope.</p>",
+        "descriptionHtml": "<p>Ingests Anthropic Claude Activity logs into Microsoft Sentinel via the Claude Compliance API, using the Codeless Connector Framework (CCF). The Activity Feed records authentication, chat, file, project, administrative, and platform actions occurring in your organization. Includes 14 analytic rule templates and 6 hunting queries covering SSO and guardrail tampering, credential and role changes, brute force, data exports, mass deletion, content probing, MCP and extension changes, public content sharing, Compliance API anomalies, invite abuse, and Anthropic operator access transparency. Requires Claude Enterprise with the Compliance API enabled and a Compliance API key carrying the <code>read:compliance_activities</code> scope.</p>",
         "icon": "[variables('_packageIcon')]"
       }
     }
